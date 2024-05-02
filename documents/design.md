@@ -15,7 +15,7 @@
 ![image](https://github.com/itoh28/QuickTutor/assets/150091562/cb15cab8-a36f-48ce-a754-4cd7a63214e8)
 
 ### テーブル定義
-[別ファイル参照]()
+[別ファイル参照](https://github.com/itoh28/QuickTutor/blob/main/documents/table_definition.md)
 
 ## システム構成図
 ![image](https://github.com/itoh28/QuickTutor/assets/150091562/90e818f6-7849-4512-8e13-51c7dfa1321d)
