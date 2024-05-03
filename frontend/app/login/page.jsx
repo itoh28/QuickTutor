@@ -23,7 +23,8 @@ const LogIn = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost/api/login', formData);
-      console.log(response.data);
+      const { token } = response.data;
+      localStorage.setItem('token', token);
       router.push('/home');
     } catch (error) {
       throw new Error('ログインに失敗しました');
