@@ -1,9 +1,47 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
+import axios from 'axios';
+import { useRouter } from 'next/navigation.js';
 
-const signUp = () => {
+const SignUp = () => {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    group_name: '',
+    username: '',
+    password: '',
+    passwordConfirm: '',
+  });
+  console.log(formData);
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.passwordConfirm) {
+      setError('パスワードが一致しません');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost/api/register',
+        formData,
+      );
+      console.log(response.data);
+      router.push('/home');
+    } catch (error) {
+      throw new Error('アカウントを登録できませんでした');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-base flex flex-col">
       <Header />
@@ -12,33 +50,40 @@ const signUp = () => {
           <div className="text-center py-4 rounded-t bg-main text-white text-2xl font-bold">
             Sign up
           </div>
-          <form className="bg-white shadow-md rounded-b px-8 py-6">
+          <form
+            className="bg-white shadow-md rounded-b px-8 py-6"
+            onSubmit={handleSubmit}
+          >
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="username"
+                htmlFor="group_name"
               >
                 会社/団体名
               </label>
               <input
                 className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="username"
+                id="group_name"
                 type="text"
                 placeholder="例）株式会社マニュアル"
+                value={formData.group_name}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="user-name"
+                htmlFor="username"
               >
                 ユーザー名
               </label>
               <input
                 className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                id="user-name"
+                id="username"
                 type="text"
                 placeholder="例）田中太郎"
+                value={formData.username}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
@@ -52,27 +97,29 @@ const signUp = () => {
                 className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                 id="password"
                 type="password"
-                placeholder="***********"
+                placeholder="8文字以上の英数字"
+                value={formData.password}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="password-confirm"
+                htmlFor="passwordConfirm"
               >
                 パスワード（確認用）
               </label>
               <input
-                className="shadow order rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                id="password-confirm"
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-6 leading-tight focus:outline-none focus:shadow-outline"
+                id="passwordConfirm"
                 type="password"
-                placeholder="***********"
+                placeholder="パスワード再入力"
+                value={formData.passwordConfirm}
+                onChange={handleChange}
               />
             </div>
             <div className="flex justify-center">
-              <Link href="/signup-success">
-                <Button text="登録" />
-              </Link>
+              <Button text="登録" type="submit" />
             </div>
             <div className="flex justify-center text-sm hover:text-blue-400 pt-6">
               <Link href="login">
@@ -86,4 +133,4 @@ const signUp = () => {
   );
 };
 
-export default signUp;
+export default SignUp;
