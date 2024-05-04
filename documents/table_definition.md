@@ -53,6 +53,7 @@
 | id                        | BIGINT       | PK   | true     |              | true                 |
 | media_id                  | BIGINT       | FK   | true     |              |                      |
 | view_count                | INT          |      | true     | 0            |                      |
+| manual_title              | VARCHAR(30)  |      | true     |              |                      |
 | step_id                   | BIGINT       | FK   | true     |              |                      |
 | is_draft                  | BOOLEAN      |      | true     | 1(true)      |                      |
 | deleted_at                | DATETIME     |      | false    |              |                      |
