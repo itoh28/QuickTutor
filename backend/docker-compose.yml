@@ -117,11 +117,11 @@ services:
     volumes:
       - './minio/data:/data:delegated'
     ports:
-      - '9000:9000' # MinIO APIポート
-      - '9001:9001' # MinIO コンソールポート
+      - ${MINIO_API_PORT}:9000
+      - ${MINIO_CONSOLE_PORT}:9001
     environment:
-      MINIO_ROOT_USER: minio_root
-      MINIO_ROOT_PASSWORD: minio_password
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     command: server /data --console-address :9001
     networks:
       - sail

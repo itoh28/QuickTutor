@@ -11,6 +11,6 @@ class Genre extends Model
 
     public function manuals()
     {
-        return $this->belongsToMany(Manual::class);
+        return $this->belongsToMany(Manual::class, 'genre_manuals');
     }
 }
