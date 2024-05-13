@@ -12,7 +12,7 @@
 
 ## DB設計
 ### ER図
-![image](https://github.com/itoh28/QuickTutor/assets/150091562/cb15cab8-a36f-48ce-a754-4cd7a63214e8)
+![image](https://github.com/itoh28/QuickTutor/assets/150091562/57e99342-5752-4cb1-96d6-83197c2383d6)
 
 ### テーブル定義
 [別ファイル参照](https://github.com/itoh28/QuickTutor/blob/main/documents/table_definition.md)
