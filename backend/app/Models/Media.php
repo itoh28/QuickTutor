@@ -9,6 +9,14 @@ class Media extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'step_image_url',
+        'step_video_url',
+        's3_key',
+        'file_size',
+        'content_type',
+    ];
+
     public function backgroundImage()
     {
         return $this->belongsTo(BackgroundImage::class);

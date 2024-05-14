@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Header from '../_components/Header.jsx';
-import Button from '../_components/Button.jsx';
-import Link from 'next/link.js';
-import { useRouter } from 'next/navigation.js';
-import axios from 'axios';
+import React, { useState } from "react";
+import Header from "../_components/Header.jsx";
+import Button from "../_components/Button.jsx";
+import Link from "next/link.js";
+import { useRouter } from "next/navigation.js";
+import axios from "axios";
 
 const LogIn = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
 
   const handleChange = (e) => {
@@ -22,19 +22,19 @@ const LogIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost/api/login', formData);
+      const response = await axios.post("http://localhost/api/login", formData);
       const { token } = response.data;
-      localStorage.setItem('token', token);
-      router.push('/home');
+      localStorage.setItem("token", token);
+      router.push("/home");
     } catch (error) {
-      throw new Error('ログインに失敗しました');
+      throw new Error("ログインに失敗しました");
     }
   };
 
   return (
     <div className="min-h-screen bg-base flex flex-col">
       <Header />
-      <div className="flex-grow flex justify-center  mt-20">
+      <div className="flex-grow flex justify-center  my-10">
         <div className="w-full max-w-md">
           <div className="text-center py-4 rounded-t bg-main text-white text-2xl font-bold">
             Log in

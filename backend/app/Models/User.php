@@ -51,11 +51,13 @@ class User extends Authenticatable
 
     public function manuals()
     {
-        return $this->belongsToMany(Manual::class);
+        return $this->belongsToMany(Manual::class, 'user_manuals')
+            ->withTimestamps()
+            ->withPivot('uploaded_at');
     }
 
     public function questions()
     {
-        return $this->belongsToMany(Question::class);
+        return $this->belongsToMany(Question::class, 'user_questions');
     }
 }

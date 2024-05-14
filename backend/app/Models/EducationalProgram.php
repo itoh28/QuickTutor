@@ -11,6 +11,6 @@ class EducationalProgram extends Model
 
     public function manuals()
     {
-        return $this->belongsToMany(Manual::class);
+        return $this->belongsToMany(Manual::class, 'educational_program_manuals');
     }
 }

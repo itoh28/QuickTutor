@@ -11,7 +11,7 @@ class Question extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'user_questions');
     }
 
     public function manual()
