@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Manual;
+use App\Models\Genre;
 use App\Http\Requests\ManualRequest;
 use App\Http\Resources\ManualResource;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +20,28 @@ class ManualController extends Controller
     public function store(ManualRequest $request)
     {
         try {
+            $genreIds = [];
+            $genres = $request->input('genres', []);
+            foreach ($genres as $genre) {
+                $genreModel = Genre::firstOrCreate(['genre_name' => $genre]);
+                $genreIds[] = $genreModel->id;
+            }
+
             $manual = Manual::create($request->only(['media_id', 'manual_title', 'is_draft']));
-            $manual->genres()->attach($request->genres);
-            $manual->steps()->createMany($request->steps);
+            $manual->genres()->attach($genreIds);
+
+            $stepsData = [];
+            foreach ($request->steps as $step) {
+                $stepsData[] = [
+                    'step_subtitle' => $step['step_subtitle'],
+                    'step_comment' => $step['step_comment'],
+                    'media_id' => $step['media_id'] ?? null,
+                ];
+            }
+
+            foreach ($stepsData as $stepData) {
+                $manual->steps()->create($stepData);
+            }
 
             $user = Auth::user();
             if ($user) {
@@ -33,10 +53,9 @@ class ManualController extends Controller
             return new ManualResource($manual);
         } catch (\Exception $e) {
             Log::error('Exception in ManualController@store: ' . $e->getMessage());
-            return response()->json(['error' => 'An error occurred'], 500);
+            return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
     }
-
 
     public function show($id)
     {

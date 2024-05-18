@@ -4,13 +4,19 @@ import React, { useRef, useState } from 'react';
 import Header from '../_components/Header';
 import EscButton from '../_components/EscButton';
 import Button from '../_components/Button';
-import ImageUpload from '../_components/ImageUpload';
+import MediaUpload from '../_components/MediaUpload';
 import TagGenerator from '../_components/TagGenerator';
 import StepManager from '../_components/StepManager';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 const CreateManual = () => {
   const [title, setTitle] = useState('');
+  const [steps, setSteps] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [media, setMedia] = useState(null);
   const titleInputRef = useRef(null);
+  const router = useRouter();
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -23,18 +29,112 @@ const CreateManual = () => {
     }
   };
 
+  const handleSubmit = async (isDraft) => {
+    try {
+      const formData = new FormData();
+      formData.append('manual_title', title);
+      formData.append('is_draft', isDraft ? '1' : '0');
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      let mediaId = null;
+      if (media) {
+        const mediaFormData = new FormData();
+        mediaFormData.append('file', media);
+
+        try {
+          const mediaResponse = await axios.post(
+            'http://localhost/api/media/upload',
+            mediaFormData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+          mediaId = mediaResponse.data.data.id;
+        } catch (error) {
+          throw new Error('Failed to upload media');
+        }
+      }
+
+      if (!mediaId) {
+        return;
+      }
+
+      formData.append('media_id', mediaId);
+
+      tags.forEach((tag, index) => formData.append(`genres[${index}]`, tag));
+
+      const stepsData = [];
+      for (const step of steps) {
+        let stepMediaId = null;
+        if (step.media) {
+          const stepMediaFormData = new FormData();
+          stepMediaFormData.append('file', step.media);
+
+          try {
+            const stepMediaResponse = await axios.post(
+              'http://localhost/api/media/upload',
+              stepMediaFormData,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            );
+            stepMediaId = stepMediaResponse.data.data.id;
+          } catch (error) {
+            throw new Error(`Failed to upload media for step ${step.number}`);
+          }
+        }
+
+        stepsData.push({
+          step_subtitle: step.subtitle,
+          step_comment: step.comment,
+          media_id: stepMediaId,
+        });
+      }
+
+      stepsData.forEach((step, index) => {
+        formData.append(`steps[${index}][step_subtitle]`, step.step_subtitle);
+        formData.append(`steps[${index}][step_comment]`, step.step_comment);
+        formData.append(`steps[${index}][media_id]`, step.media_id);
+      });
+
+      await axios.post('http://localhost/api/manuals', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      router.push('/edit-manuals');
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        console.error('Validation Error:', error.response.data.errors);
+      } else {
+        console.error('Error creating manual:', error);
+      }
+    }
+  };
+
   return (
-    <div className="w-full h-full bg-base flex flex-col items-center overflow-hidden">
+    <div className="w-full h-full bg-baseColor flex flex-col items-center overflow-hidden">
       <Header />
       <div className="w-4/5 rounded-t bg-main text-2xl font-bold mt-12">
         <div className="flex">
           <div className="mr-4 py-6">
-            <ImageUpload />
+            <MediaUpload setMedia={setMedia} />
           </div>
           <div className="flex-grow flex flex-col my-2">
             <div className="flex w-full justify-between">
               <div className="mt-6">
-                <TagGenerator />
+                <TagGenerator setTags={setTags} />
               </div>
               <div className="mt-3">
                 <EscButton />
@@ -54,11 +154,21 @@ const CreateManual = () => {
         </div>
       </div>
       <div className="w-4/5 mb-12">
-        <StepManager />
+        <StepManager setSteps={setSteps} />
       </div>
       <div className="flex justify-evenly w-full mb-12">
-        <Button text="下書き保存" type="submit" fontSize="text-xl" />
-        <Button text="作成" fontSize="text-xl" />
+        <Button
+          text="下書き保存"
+          type="button"
+          fontSize="text-xl"
+          onClick={() => handleSubmit(true)}
+        />
+        <Button
+          text="作成"
+          type="button"
+          fontSize="text-xl"
+          onClick={() => handleSubmit(false)}
+        />
       </div>
     </div>
   );

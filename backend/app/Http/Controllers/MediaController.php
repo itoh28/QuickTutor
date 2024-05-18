@@ -12,8 +12,6 @@ class MediaController extends Controller
 {
     public function upload(UploadMediaRequest $request)
     {
-        Log::info('Validating file upload...');
-
         $file = $request->file('file');
         $path = Storage::disk('s3')->put('media', $file);
         if (!$path) {
@@ -40,7 +38,7 @@ class MediaController extends Controller
             return response()->json(['error' => 'Failed to save media record'], 500);
         }
 
-        Log::info('Media record saved successfully.');
-        return new MediaResource($media);
+        Log::info('Media record saved successfully.', ['media' => $media]);
+        return response()->json(['data' => new MediaResource($media)], 201);
     }
 }
