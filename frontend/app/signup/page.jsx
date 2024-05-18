@@ -1,21 +1,25 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Header from "../_components/Header.jsx";
-import Button from "../_components/Button.jsx";
-import Link from "next/link.js";
-import axios from "axios";
-import { useRouter } from "next/navigation.js";
+import React, { useState, useEffect } from 'react';
+import Header from '../_components/Header.jsx';
+import Button from '../_components/Button.jsx';
+import Link from 'next/link.js';
+import axios from 'axios';
+import { useRouter } from 'next/navigation.js';
 
 const SignUp = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    group_name: "",
-    username: "",
-    password: "",
-    passwordConfirm: "",
+    group_name: '',
+    username: '',
+    password: '',
+    passwordConfirm: '',
   });
-  console.log(formData);
+
+  useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -26,25 +30,27 @@ const SignUp = () => {
     e.preventDefault();
 
     if (formData.password !== formData.passwordConfirm) {
-      setError("パスワードが一致しません");
+      console.error('パスワードが一致しません');
       return;
     }
 
     try {
       const response = await axios.post(
-        "http://localhost/api/register",
-        formData
+        'http://localhost/api/register',
+        formData,
       );
-      console.log(response.data);
-      router.push("/home");
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      router.push('/view-manuals');
     } catch (error) {
-      throw new Error("アカウントを登録できませんでした");
+      console.error('アカウントを登録できませんでした', error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-base flex flex-col">
-      <Header />
+    <div className="min-h-screen bg-baseColor flex flex-col">
+      <Header showUserInfo={false} />
       <div className="flex-grow flex justify-center my-10">
         <div className="w-full max-w-md">
           <div className="text-center py-4 rounded-t bg-main text-white text-2xl font-bold">

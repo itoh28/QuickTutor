@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -47,7 +48,6 @@ class AuthController extends Controller
     public function getUser(Request $request)
     {
         $user = $request->user();
-
         return new UserResource($user);
     }
 

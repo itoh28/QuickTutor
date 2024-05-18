@@ -1,31 +1,40 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 
-const TagGenerator = () => {
-  const [tags, setTags] = useState([]);
+const TagGenerator = ({ setTags }) => {
+  const [inputValue, setInputValue] = useState('');
+  const [tags, setLocalTags] = useState([]);
+
+  useEffect(() => {
+    setTags(tags);
+  }, [tags, setTags]);
 
   const addTag = (e) => {
     if (
-      e.key === "Enter" &&
-      e.target.value.trim() !== "" &&
+      e.key === 'Enter' &&
+      e.target.value.trim() !== '' &&
       e.target.value.trim().length < 16 &&
       tags.length < 5
     ) {
-      setTags([...tags, e.target.value.trim()]);
-      e.target.value = "";
+      const newTags = [...tags, inputValue.trim()];
+      setLocalTags(newTags);
+      setInputValue('');
       e.preventDefault();
     }
   };
 
   const removeTag = (indexToRemove) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove));
+    const newTags = tags.filter((_, index) => index !== indexToRemove);
+    setLocalTags(newTags);
   };
 
   return (
     <div>
       <input
         type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={addTag}
         placeholder="ジャンルを入力(5個まで設定可)"
         maxLength={15}

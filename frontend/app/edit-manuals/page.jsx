@@ -1,6 +1,6 @@
-import React from "react";
-import Header from "../_components/Header";
-import EditModeSidebar from "../_components/EditModeSidebar";
+import React from 'react';
+import Header from '../_components/Header';
+import EditModeSidebar from '../_components/EditModeSidebar';
 
 const EditManuals = () => {
   return (

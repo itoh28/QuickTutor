@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
-import ImageUpload from './ImageUpload';
+import React, { useState, useEffect } from 'react';
 import { TrashCanIcon } from './_icons/TrashCanIcon';
+import MediaUpload from './MediaUpload';
 
-const StepManager = () => {
-  const [steps, setSteps] = useState([
+const StepManager = ({ setSteps }) => {
+  const [steps, setLocalSteps] = useState([
     { id: 0, subtitle: '', comment: '', number: 1, focusedOnce: false },
   ]);
 
+  useEffect(() => {
+    setSteps(steps);
+  }, [steps, setSteps]);
+
   const addStep = () => {
-    setSteps((prevSteps) => [
+    setLocalSteps((prevSteps) => [
       ...prevSteps,
       {
         id:
           prevSteps.length > 0
             ? Math.max(...prevSteps.map((s) => s.id)) + 1
             : 0,
+        media: null,
         subtitle: '',
         comment: '',
         number: prevSteps.length + 1,
@@ -24,7 +29,7 @@ const StepManager = () => {
   };
 
   const removeStep = (id) => {
-    setSteps((prevSteps) => {
+    setLocalSteps((prevSteps) => {
       const filteredSteps = prevSteps.filter((step) => step.id !== id);
       const updatedSteps = filteredSteps.map((step, index) => ({
         ...step,
@@ -34,26 +39,34 @@ const StepManager = () => {
     });
   };
 
+  const handleMediaChange = (id, file) => {
+    setLocalSteps((prevSteps) =>
+      prevSteps.map((step) =>
+        step.id === id ? { ...step, media: file } : step,
+      ),
+    );
+  };
+
   const handleSubtitleChange = (id, value) => {
     const newText = value.replace(/^\d+\.\s*/, '');
-    setSteps(
-      steps.map((step) =>
+    setLocalSteps((prevSteps) =>
+      prevSteps.map((step) =>
         step.id === id ? { ...step, subtitle: newText } : step,
       ),
     );
   };
 
   const handleCommentChange = (id, value) => {
-    setSteps(
-      steps.map((step) =>
+    setLocalSteps((prevSteps) =>
+      prevSteps.map((step) =>
         step.id === id ? { ...step, comment: value } : step,
       ),
     );
   };
 
   const handleFocus = (id) => {
-    setSteps(
-      steps.map((step) =>
+    setLocalSteps((prevSteps) =>
+      prevSteps.map((step) =>
         step.id === id ? { ...step, focusedOnce: true } : step,
       ),
     );
@@ -65,7 +78,9 @@ const StepManager = () => {
         <div key={step.id} className="flex py-6 pr-6 border-b-2">
           <div className="flex items-stretch w-full">
             <div>
-              <ImageUpload />
+              <MediaUpload
+                setMedia={(file) => handleMediaChange(step.id, file)}
+              />
             </div>
             <div className="flex-grow flex flex-col">
               <div className="flex items-center w-full">
@@ -115,4 +130,5 @@ const StepManager = () => {
     </div>
   );
 };
+
 export default StepManager;

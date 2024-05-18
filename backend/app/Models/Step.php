@@ -9,7 +9,7 @@ class Step extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['step_subtitle', 'step_comment'];
+    protected $fillable = ['media_id', 'step_subtitle', 'step_comment'];
 
     public function manual()
     {

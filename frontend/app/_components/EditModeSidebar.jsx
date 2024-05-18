@@ -9,10 +9,10 @@ import { DraftIcon } from './_icons/DraftIcon';
 
 const EditModeSidebar = () => {
   return (
-    <div className="flex flex-col text-white h-full">
+    <div className="flex flex-col text-xl text-white h-full">
       <Link href="/view-manuals">
         <div className="w-full flex justify-center text-black bg-accent2 hover:bg-base hover:text-main py-4">
-          <button className="mr-2">閲覧モードへ</button>
+          <button className="mr-2 font-semibold">閲覧モードへ</button>
           <SwitchIcon />
         </div>
       </Link>
