@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/**'
       - 'backend/app/**'
+      - 'backend/docker/**'
 
 env:
   AWS_REGION: ap-northeast-1
