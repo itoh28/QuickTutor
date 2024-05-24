@@ -1,4 +1,5 @@
 name: Deploy to AWS ECS
+
 on:
   push:
     paths:
@@ -29,7 +30,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t temp_api_image:latest backend/docker/8.3/Dockerfile .
+          docker build -t temp_api_image:latest -f docker/8.3/Dockerfile .
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -45,5 +46,5 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker image tag temp_api_image:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
-          docker image push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+          docker tag temp_api_image:latest $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
