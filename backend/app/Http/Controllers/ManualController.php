@@ -13,8 +13,17 @@ class ManualController extends Controller
 {
     public function index()
     {
-        $manuals = Manual::with(['media', 'genres', 'users'])->get();
-        return ManualResource::collection($manuals);
+        $manuals = Manual::with(['media', 'genres', 'users'])->paginate(50);
+        return ManualResource::collection($manuals)->additional([
+            'meta' => [
+                'total' => $manuals->total(),
+                'current_page' => $manuals->currentPage(),
+                'last_page' => $manuals->lastPage(),
+                'per_page' => $manuals->perPage(),
+                'from' => $manuals->firstItem(),
+                'to' => $manuals->lastItem(),
+            ]
+        ]);
     }
 
     public function store(ManualRequest $request)
