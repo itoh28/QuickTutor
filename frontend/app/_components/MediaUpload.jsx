@@ -1,15 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 const MediaUpload = ({ setMedia }) => {
   const [mediaPreview, setMediaPreview] = useState(null);
+  const [mediaType, setMediaType] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleMediaChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setMediaPreview(URL.createObjectURL(file));
-      setMedia(file);
+      const filetype = file.type;
+      const validImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+      const validVideoTypes = ['video/mp4', 'video/mov'];
+
+      if (
+        validImageTypes.includes(filetype) ||
+        validVideoTypes.includes(filetype)
+      ) {
+        setMediaPreview(URL.createObjectURL(file));
+        setMediaType(validImageTypes.includes(filetype) ? 'image' : 'video');
+        setMedia(file);
+      } else {
+        alert(
+          '対応していないファイル形式です。画像または動画をアップロードしてください。',
+        );
+      }
+    }
+  };
+
+  const handleVideoClick = () => {
+    if (mediaType === 'video' && fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -19,14 +41,27 @@ const MediaUpload = ({ setMedia }) => {
         {!mediaPreview && (
           <span className="text-black text-2xl">ファイルを選択</span>
         )}
-        {mediaPreview && (
+        {mediaPreview && mediaType === 'image' && (
           <img
             src={mediaPreview}
             alt="Uploaded"
             className="absolute top-0 left-0 w-full h-full object-contain"
           />
         )}
-        <input type="file" onChange={handleMediaChange} className="hidden" />
+        {mediaPreview && mediaType === 'video' && (
+          <video
+            src={mediaPreview}
+            controls
+            onClick={handleVideoClick}
+            className="absolute top-0 left-0 w-full h-full object-contain"
+          ></video>
+        )}
+        <input
+          type="file"
+          onChange={handleMediaChange}
+          ref={fileInputRef}
+          className="hidden"
+        />
       </label>
     </div>
   );

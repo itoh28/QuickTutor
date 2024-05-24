@@ -7,7 +7,7 @@ import { TextBookIcon } from './_icons/TextBookIcon';
 
 const ViewModeSidebar = () => {
   return (
-    <div className="flex flex-col text-xl text-white h-full">
+    <div className="flex flex-col text-lg text-white h-full">
       <Link href="/edit-manuals">
         <div className="w-full flex justify-center text-black bg-accent2 hover:bg-baseColor hover:text-main py-4">
           <button className="mr-2 font-semibold">編集モードへ</button>

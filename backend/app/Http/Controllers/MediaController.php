@@ -13,11 +13,18 @@ class MediaController extends Controller
     public function upload(UploadMediaRequest $request)
     {
         $file = $request->file('file');
-        $path = Storage::disk('s3')->put('media', $file);
+
+        // ファイルの内容を読み込み、オプションにContent-Typeを設定してアップロード
+        $path = Storage::disk('s3')->put('media/' . $file->getClientOriginalName(), file_get_contents($file), [
+            'visibility' => 'public',
+            'ContentType' => $file->getMimeType()
+        ]);
+
         if (!$path) {
             Log::error('File upload failed.');
             return response()->json(['error' => 'File upload failed'], 500);
         }
+
         Log::info('File uploaded successfully: ' . $path);
 
         $bucketName = env('AWS_BUCKET', 'quick-tutor');
