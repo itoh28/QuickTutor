@@ -20,9 +20,6 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
 
     steps:
       - name: Checkout code
@@ -30,7 +27,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t temp_api_image:latest -f docker/8.3/Dockerfile .
+          docker build -t temp_api_image:latest -f backend/docker/8.3/Dockerfile .
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
