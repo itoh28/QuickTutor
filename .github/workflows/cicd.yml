@@ -8,7 +8,7 @@ on:
 
 env:
   AWS_REGION: ap-northeast-1
-  ECS_CLUSTER: my-app-cluster
+  ECS_CLUSTER: my-app-ecs-cluster
   ECS_SERVICE: my-app-api-service
   ECR_REPOSITORY: my-app-api
   ECS_TASK_DEFINITION_API: backend/.aws/task-def-api.json
