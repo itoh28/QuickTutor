@@ -29,7 +29,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker image build -t temp_api_image:latest docker/8.3/Dockerfile .
+          docker build -t temp_api_image:latest backend/docker/8.3/Dockerfile .
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
