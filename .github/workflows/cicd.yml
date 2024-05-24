@@ -32,6 +32,7 @@ jobs:
         run: |
           docker build -t temp_api_image:latest -f docker/8.3/Dockerfile .
 
+        #
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
