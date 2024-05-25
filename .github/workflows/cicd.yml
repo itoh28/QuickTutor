@@ -50,12 +50,15 @@ jobs:
         run: |
           docker tag temp_api_image:latest $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          echo $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} > api-image-uri.txt
+          cat api-image-uri.txt
+          ls -la
 
       - name: Upload the image uri file as an artifact
         uses: actions/upload-artifact@v3
         with:
           name: api-image-uri
-          path: backend/api-image-uri.txt
+          path: api-image-uri.txt
           if-no-files-found: warn
 
   deploy:
@@ -73,7 +76,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
 
       - name: Download the artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: api-image-uri
           path: artifacts
