@@ -2,10 +2,8 @@ name: Deploy to AWS ECS
 
 on:
   push:
-    paths:
-      - '.github/workflows/**'
-      - 'backend/app/**'
-      - 'backend/docker/**'
+    branches:
+      - main
 
 env:
   AWS_REGION: ap-northeast-1
@@ -31,9 +29,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t temp_api_image:latest -f docker/8.3/Dockerfile .
+          docker image build -t temp_api_image:latest -f docker/8.3/Dockerfile .
 
-        #
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -48,12 +45,12 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker tag temp_api_image:latest $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          echo $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} > api-image-uri.txt
+          docker image tag temp_api_image:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+          docker image push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+          echo $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} > api-image-uri.txt
 
       - name: Upload the image uri file as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: api-image-uri
           path: backend/api-image-uri.txt
@@ -73,7 +70,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
 
       - name: Download the artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: api-image-uri
           path: artifacts
