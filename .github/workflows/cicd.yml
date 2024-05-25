@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: api-image-uri
-          path: backend/api-image-uri.txt
+          path: api-image-uri.txt
 
   deploy:
     runs-on: ubuntu-latest
