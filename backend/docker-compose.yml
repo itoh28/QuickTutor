@@ -55,14 +55,13 @@ services:
       timeout: 5s
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    links:
-      - mysql:mysql
     ports:
       - 8088:80
     environment:
-      MYSQL_USERNAME: '${DB_USERNAME}'
-      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-      PMA_HOST: mysql
+      PMA_HOST: '${DB_HOST}'
+      PMA_PORT: '${DB_PORT}'
+      PMA_USER: '${DB_USERNAME}'
+      PMA_PASSWORD: '${DB_PASSWORD}'
     networks:
       - sail
   redis:

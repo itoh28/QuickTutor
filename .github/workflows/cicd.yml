@@ -2,11 +2,8 @@ name: Deploy to AWS ECS
 
 on:
   push:
-    paths:
-      - '.github/workflows/**'
-      - 'backend/.aws/**'
-      - 'backend/app/**'
-      - 'backend/docker/**'
+    branches:
+      - main
 
 env:
   AWS_REGION: ap-northeast-1
