@@ -50,13 +50,22 @@ jobs:
         run: |
           docker tag temp_api_image:latest $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          echo $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} > .aws/api-image-uri.txt
+          echo $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} > ../api-image-uri.txt
+
+      - name: Check if api-image-uri.txt exists
+        run: |
+          if [ -f ../api-image-uri.txt ]; then
+            echo "api-image-uri.txt exists"
+          else
+            echo "api-image-uri.txt does not exist"
+            exit 1
+          fi
 
       - name: Upload the image uri file as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: api-image-uri
-          path: .aws/api-image-uri.txt
+          path: ../api-image-uri.txt
           if-no-files-found: warn
 
   deploy:
@@ -77,11 +86,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: api-image-uri
-          path: artifacts
+          path: .
 
       - name: Check downloaded artifact
         run: |
-          if [ ! -f artifacts/api-image-uri.txt ]; then
+          if [ ! -f api-image-uri.txt ]; then
             echo "Downloaded api-image-uri.txt does not exist"
             exit 1
           else
@@ -90,7 +99,7 @@ jobs:
 
       - name: Define the image uri
         run: |
-          echo "API_IMAGE_URI=$(cat artifacts/api-image-uri.txt)" >> $GITHUB_ENV
+          echo "API_IMAGE_URI=$(cat api-image-uri.txt)" >> $GITHUB_ENV
 
       - name: Fill in the new image URI in the amazon ECS task definition
         id: render-task-def
