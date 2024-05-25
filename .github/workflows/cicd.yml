@@ -32,7 +32,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t temp_api_image:latest -f docker/8.3/Dockerfile .
+          docker image build -t temp_api_image:latest -f docker/8.3/Dockerfile .
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -48,13 +48,13 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker tag temp_api_image:latest $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          echo $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} > ../api-image-uri.txt
+          docker image tag temp_api_image:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+          docker image push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+          echo $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} > api-image-uri.txt
 
       - name: Check if api-image-uri.txt exists
         run: |
-          if [ -f ../api-image-uri.txt ]; then
+          if [ -f api-image-uri.txt ]; then
             echo "api-image-uri.txt exists"
           else
             echo "api-image-uri.txt does not exist"
@@ -65,8 +65,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: api-image-uri
-          path: ../api-image-uri.txt
-          if-no-files-found: warn
+          path: backend/api-image-uri.txt
 
   deploy:
     runs-on: ubuntu-latest
@@ -86,7 +85,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: api-image-uri
-          path: .
+          path: artifacts
 
       - name: Check downloaded artifact
         run: |
@@ -99,7 +98,7 @@ jobs:
 
       - name: Define the image uri
         run: |
-          echo "API_IMAGE_URI=$(cat api-image-uri.txt)" >> $GITHUB_ENV
+          echo "API_IMAGE_URI=$(cat artifacts/api-image-uri.txt)" >> $GITHUB_ENV
 
       - name: Fill in the new image URI in the amazon ECS task definition
         id: render-task-def
