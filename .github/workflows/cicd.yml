@@ -52,15 +52,6 @@ jobs:
           docker image push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
           echo $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} > api-image-uri.txt
 
-      - name: Check if api-image-uri.txt exists
-        run: |
-          if [ -f api-image-uri.txt ]; then
-            echo "api-image-uri.txt exists"
-          else
-            echo "api-image-uri.txt does not exist"
-            exit 1
-          fi
-
       - name: Upload the image uri file as an artifact
         uses: actions/upload-artifact@v4
         with:
@@ -86,15 +77,6 @@ jobs:
         with:
           name: api-image-uri
           path: artifacts
-
-      - name: Check downloaded artifact
-        run: |
-          if [ ! -f api-image-uri.txt ]; then
-            echo "Downloaded api-image-uri.txt does not exist"
-            exit 1
-          else
-            echo "Downloaded api-image-uri.txt exists"
-          fi
 
       - name: Define the image uri
         run: |
