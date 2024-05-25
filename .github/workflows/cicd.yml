@@ -33,6 +33,10 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t temp_api_image:latest -f docker/8.3/Dockerfile .
+          echo "Docker build completed"
+          echo $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} > backend/api-image-uri.txt
+          cat backend/api-image-uri.txt
+          ls -la backend
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -50,19 +54,16 @@ jobs:
         run: |
           docker tag temp_api_image:latest $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          echo $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} > api-image-uri.txt
-          if [ ! -f api-image-uri.txt ]; then
-            echo "api-image-uri.txt does not exist"
-            exit 1
-          else
-            echo "api-image-uri.txt exists"
-          fi
+          echo $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} > backend/api-image-uri.txt
+          echo "Pushed image URI: $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
+          ls -la backend
 
       - name: Upload the image uri file as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: api-image-uri
-          path: api-image-uri.txt
+          path: backend/api-image-uri.txt
+          if-no-files-found: warn
 
   deploy:
     runs-on: ubuntu-latest
@@ -91,6 +92,7 @@ jobs:
             exit 1
           else
             echo "Downloaded api-image-uri.txt exists"
+            ls -la artifacts/
           fi
 
       - name: Define the image uri
