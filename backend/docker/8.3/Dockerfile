@@ -64,3 +64,5 @@ RUN chmod +x /usr/local/bin/start-container
 EXPOSE 8080
 
 ENTRYPOINT ["start-container"]
+
+CMD ["sh", "-c", "php artisan migrate --force && supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
