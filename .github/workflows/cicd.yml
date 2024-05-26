@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - '.github/workflows/**'
-      - 'backend/.aws/**'
       - 'backend/app/**'
       - 'backend/routes/**'
       - 'backend/docker/**'
