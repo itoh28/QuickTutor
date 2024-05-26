@@ -6,6 +6,7 @@ on:
       - '.github/workflows/**'
       - 'backend/.aws/**'
       - 'backend/app/**'
+      - 'backend/routes/**'
       - 'backend/docker/**'
 
 env:

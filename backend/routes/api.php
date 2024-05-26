@@ -5,6 +5,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\MediaController;
 
+Route::get('/health', function () {
+    return response()->json(['status' => 'OK'], 200);
+});
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
