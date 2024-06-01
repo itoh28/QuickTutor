@@ -1,30 +1,67 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
+import { useRouter } from 'next/navigation.js';
+import axios from 'axios';
 
-const logIn = () => {
+const LogIn = () => {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
+  useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }, []);
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost/api/login', formData);
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      router.push('/view-manuals');
+    } catch (error) {
+      console.error('ログインに失敗しました', error);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-base flex flex-col">
-      <Header />
-      <div className="flex-grow flex justify-center  mt-20">
+    <div className="min-h-screen bg-baseColor flex flex-col">
+      <Header showUserInfo={false} />
+      <div className="flex-grow flex justify-center my-10">
         <div className="w-full max-w-md">
           <div className="text-center py-4 rounded-t bg-main text-white text-2xl font-bold">
             Log in
           </div>
-          <form className="bg-white shadow-md rounded-b px-8 py-6">
+          <form
+            className="bg-white shadow-md rounded-b px-8 py-6"
+            onSubmit={handleSubmit}
+          >
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="user-name"
+                htmlFor="username"
               >
                 ユーザー名
               </label>
               <input
                 className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                id="user-name"
+                id="username"
                 type="text"
-                placeholder="例）田中太郎"
+                value={formData.username}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
@@ -38,15 +75,14 @@ const logIn = () => {
                 className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                 id="password"
                 type="password"
-                placeholder="***********"
+                value={formData.password}
+                onChange={handleChange}
               />
             </div>
             <div className="flex justify-center my-8">
-              <Link href="/home">
-                <Button text="ログイン" />
-              </Link>
+              <Button text="ログイン" type="submit" />
             </div>
-            <div className="flex justify-center text-sm hover:text-blue-400 ">
+            <div className="flex justify-center text-sm hover:text-blue-400">
               <Link href="signup">
                 <p>新規登録がまだの方はこちら</p>
               </Link>
@@ -58,4 +94,4 @@ const logIn = () => {
   );
 };
 
-export default logIn;
+export default LogIn;

@@ -9,6 +9,8 @@ class Step extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['media_id', 'step_subtitle', 'step_comment'];
+
     public function manual()
     {
         return $this->belongsTo(Manual::class);

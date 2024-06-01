@@ -1,11 +1,114 @@
-import React from 'react';
+'use client';
 
-const Header = () => {
-  return (
-    <div className="w-screen text-white bg-main p-4">
-      <div className="ml-2">
-        <span className="text-xl font-bold">QuickTutor</span>
+import React, { useState } from 'react';
+import useSWR from 'swr';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+const fetcher = async (url) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No token found');
+  }
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+const Header = ({ showUserInfo = 'true' }) => {
+  const router = useRouter();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const { data: response, error } = useSWR(
+    showUserInfo ? 'http://localhost/api/user' : null,
+    fetcher,
+  );
+
+  if (error) {
+    console.error('Error fetching user:', error);
+    return (
+      <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
+        <div className="text-2xl font-bold ml-2">
+          <Link href={'/'}>
+            <button>QuickTutor</button>
+          </Link>
+        </div>
+        <div className="text-normal">ユーザーデータを取得できませんでした</div>
       </div>
+    );
+  }
+
+  if (showUserInfo && !response) {
+    return (
+      <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
+        <div className="text-2xl font-bold ml-2">
+          <Link href={'/'}>
+            <button>QuickTutor</button>
+          </Link>
+        </div>
+        <div className="text-normal">Loading...</div>
+      </div>
+    );
+  }
+  const user = response ? response.data : null;
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      await axios.post(
+        'http://localhost/api/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      router.push('/login');
+    }
+  };
+
+  return (
+    <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
+      <div className="text-2xl font-bold ml-2">
+        <Link href={'/'}>
+          <button>QuickTutor</button>
+        </Link>
+      </div>
+      {showUserInfo && user && (
+        <div className="text-xl font-bold flex space-x-12 mr-4">
+          <span>{user.role}</span>
+          <div>
+            <button onClick={toggleDropdown}>{user.username} ▼</button>
+            {isDropdownOpen && (
+              <div className="absolute right-4 mt-2 w-40 text-black text-base bg-white border border-main">
+                <button
+                  onClick={handleLogout}
+                  className="w-full px-4 py-2 text-center hover:bg-gray-200 border-b border-main"
+                >
+                  ログアウト
+                </button>
+                <button className="w-full px-4 py-2 text-center bg-white hover:bg-gray-200 border-b border-main">
+                  ユーザー名変更
+                </button>
+                <button className="w-full px-4 py-2 text-center hover:bg-gray-200">
+                  ユーザー管理
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
