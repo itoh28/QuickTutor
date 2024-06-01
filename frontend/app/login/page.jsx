@@ -5,7 +5,7 @@ import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
-import axios from 'axios';
+import apiClient from '../_utils/apiClient.jsx';
 
 const LogIn = () => {
   const router = useRouter();
@@ -27,7 +27,7 @@ const LogIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost/api/login', formData);
+      const response = await apiClient.post('/api/login', formData);
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
