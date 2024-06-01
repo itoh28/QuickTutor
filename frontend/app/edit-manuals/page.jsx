@@ -5,7 +5,7 @@ import Header from '../_components/Header';
 import EditModeSidebar from '../_components/EditModeSidebar';
 import Link from 'next/link';
 import Button from '../_components/Button';
-import axios from 'axios';
+import apiClient from '../_utils/apiClient';
 
 const EditManuals = () => {
   const [manuals, setManuals] = useState([]);
@@ -25,7 +25,7 @@ const EditManuals = () => {
     }
 
     try {
-      const response = await axios.get('http://localhost/api/manuals', {
+      const response = await apiClient.get('/api/manuals', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
