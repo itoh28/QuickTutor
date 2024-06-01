@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "scripts": {
-    "vercel-build": "next build"
-  },
   "routes": [
     {
       "src": "/(.*)",
