@@ -5,7 +5,6 @@ import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
-import apiClient from '../_utils/apiClient.jsx';
 
 const SignUp = () => {
   const router = useRouter();
@@ -35,8 +34,21 @@ const SignUp = () => {
     }
 
     try {
-      const response = await apiClient.post('/register', formData);
-      const { token, user } = response.data;
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('アカウントを登録できませんでした');
+      }
+
+      const data = await response.json();
+      const { token, user } = data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       router.push('/view-manuals');
