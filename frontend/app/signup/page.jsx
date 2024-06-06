@@ -44,7 +44,10 @@ const SignUp = () => {
       });
 
       if (!response.ok) {
-        throw new Error('アカウントを登録できませんでした');
+        const errorData = await response.json();
+        throw new Error(
+          `アカウントを登録できませんでした: ${errorData.message}`,
+        );
       }
 
       const data = await response.json();
