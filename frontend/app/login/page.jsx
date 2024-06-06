@@ -15,16 +15,6 @@ const LogIn = () => {
   });
 
   useEffect(() => {
-    const getCsrfToken = async () => {
-      try {
-        await apiClient.get('/sanctum/csrf-cookie');
-      } catch (error) {
-        console.error('CSRFトークンの取得に失敗しました', error);
-      }
-    };
-
-    getCsrfToken();
-
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }, []);
