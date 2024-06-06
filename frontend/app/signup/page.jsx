@@ -6,6 +6,7 @@ import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import axios from 'axios';
 import { useRouter } from 'next/navigation.js';
+import apiClient from '../_utils/apiClient.jsx';
 
 const SignUp = () => {
   const router = useRouter();
@@ -35,10 +36,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post(
-        'http://localhost/api/register',
-        formData,
-      );
+      const response = await apiClient.post('/api/register', formData);
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
