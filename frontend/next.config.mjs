@@ -6,4 +6,15 @@ const nextConfig = {
   },
 };
 
+module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://quicktutor.work/api/:path*',
+      },
+    ];
+  },
+};
+
 export default nextConfig;

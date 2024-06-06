@@ -35,7 +35,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await apiClient.post('/api/register', formData);
+      const response = await apiClient.post('/register', formData);
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
