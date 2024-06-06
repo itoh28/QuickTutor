@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
-import axios from 'axios';
 import { useRouter } from 'next/navigation.js';
 import apiClient from '../_utils/apiClient.jsx';
 
