@@ -8,4 +8,12 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
+export const getCsrfCookie = async () => {
+  try {
+    await apiClient.get('/sanctum/csrf-cookie');
+  } catch (error) {
+    console.error('CSRFトークンを取得できませんでした', error);
+  }
+};
+
 export default apiClient;
