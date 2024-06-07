@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
+import axios from 'axios';
 import { useRouter } from 'next/navigation.js';
-import apiClient from '../_utils/apiClient.jsx';
 
 const LogIn = () => {
   const router = useRouter();
@@ -27,7 +27,10 @@ const LogIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await apiClient.post('/login', formData);
+      const response = await axios.post(
+        'https://quicktutor.work/api/login',
+        formData,
+      );
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
