@@ -9,7 +9,6 @@ import TagGenerator from '../_components/TagGenerator';
 import StepManager from '../_components/StepManager';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import apiClient from '../_utils/apiClient';
 
 const CreateManual = () => {
   const [title, setTitle] = useState('');
@@ -47,8 +46,8 @@ const CreateManual = () => {
         mediaFormData.append('file', media);
 
         try {
-          const mediaResponse = await apiClient.post(
-            '/api/media/upload',
+          const mediaResponse = await axios.post(
+            'https://quicktutor.work/api/media/upload',
             mediaFormData,
             {
               headers: {

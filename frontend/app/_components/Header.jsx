@@ -2,16 +2,16 @@
 
 import React, { useState } from 'react';
 import useSWR from 'swr';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import apiClient from '../_utils/apiClient';
 
 const fetcher = async (url) => {
   const token = localStorage.getItem('token');
   if (!token) {
     throw new Error('No token found');
   }
-  const response = await apiClient.get(url, {
+  const response = await axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -24,7 +24,7 @@ const Header = ({ showUserInfo = 'true' }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { data: response, error } = useSWR(
-    showUserInfo ? '/api/user' : null,
+    showUserInfo ? 'https://quicktutor.work/api/user' : null,
     fetcher,
   );
 
@@ -63,8 +63,8 @@ const Header = ({ showUserInfo = 'true' }) => {
   const handleLogout = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-      await apiClient.post(
-        '/api/logout',
+      await axios.post(
+        'https://quicktutor.work/api/logout',
         {},
         {
           headers: {
