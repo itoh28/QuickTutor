@@ -4,8 +4,16 @@ import React, { useState, useEffect } from 'react';
 import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
-import axios from 'axios';
 import { useRouter } from 'next/navigation.js';
+import axios from 'axios';
+
+const apiClient = axios.create({
+  baseURL: 'https://quicktutor.work/api',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
 
 const SignUp = () => {
   const router = useRouter();
@@ -35,13 +43,17 @@ const SignUp = () => {
     }
 
     try {
-       const response = await axios.post(
-        'https://quicktutor.work/api/register',
-        formData,
-      );
+      const response = await apiClient.post('/register', {
+        group_name: formData.group_name,
+        username: formData.username,
+        password: formData.password,
+        password_confirmation: formData.passwordConfirm,
+      });
+
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
