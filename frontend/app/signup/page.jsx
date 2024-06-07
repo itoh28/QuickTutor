@@ -5,7 +5,7 @@ import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
-import apiClient from '../_utils/apiClient.jsx';
+import apiClient, { getCsrfCookie } from '../_utils/apiClient.jsx';
 
 const SignUp = () => {
   const router = useRouter();
@@ -35,6 +35,8 @@ const SignUp = () => {
     }
 
     try {
+      await getCsrfCookie();
+      
       const response = await apiClient.post('/register', formData);
       const { token, user } = response.data;
       localStorage.setItem('token', token);
