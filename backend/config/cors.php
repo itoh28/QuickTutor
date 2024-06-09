@@ -2,7 +2,7 @@
 
 return [
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
-    'allowed_methods' => ['*'],
+    'allowed_methods' => ['http://localhost:3000', 'https://quicktutor.work', 'https://www.quicktutor.work'],
     'allowed_origins' => ['*'],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
