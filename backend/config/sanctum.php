@@ -18,7 +18,7 @@ return [
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
         'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1,
-        quicktutor.work,quicktutor.work:8080,www.quicktutor.work,www.quicktutor.work:8080',
+        quicktutor.work,quicktutor.work:80,www.quicktutor.work,www.quicktutor.work:80',
         Sanctum::currentApplicationUrlWithPort()
     ))),
 
