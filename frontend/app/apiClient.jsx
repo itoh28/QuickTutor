@@ -2,7 +2,7 @@ import Axios from 'axios';
 
 const apiClient = Axios.create({
   baseURL: 'https://quicktutor.work',
-  withCredentials: true,
+  withCredentials: false,
   headers: {
     'Content-Type': 'application/json',
   },
