@@ -53,6 +53,9 @@ const SignUp = () => {
         },
         {
           withCredentials: true,
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+          },
         },
       );
 
