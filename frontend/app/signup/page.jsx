@@ -5,7 +5,7 @@ import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
-import axios from 'axios';
+import axios from '../axios';
 
 const SignUp = () => {
   const router = useRouter();
@@ -22,9 +22,7 @@ const SignUp = () => {
 
     const getCsrfToken = async () => {
       try {
-        await axios.get('https://quicktutor.work/sanctum/csrf-cookie', {
-          withCredentials: true,
-        });
+        await axios.get('/sanctum/csrf-cookie');
         console.log('CSRF token set');
       } catch (error) {
         console.error('Failed to get CSRF token', error);
@@ -61,7 +59,7 @@ const SignUp = () => {
       }
 
       const response = await axios.post(
-        'https://quicktutor.work/api/register',
+        '/api/register',
         {
           group_name: formData.group_name,
           username: formData.username,
@@ -69,7 +67,6 @@ const SignUp = () => {
           password_confirmation: formData.passwordConfirm,
         },
         {
-          withCredentials: true,
           headers: {
             'X-CSRF-TOKEN': csrfToken,
           },
