@@ -80,6 +80,7 @@ return [
         'authenticate_session' => null,
         'encrypt_cookies' => null,
         'validate_csrf_token' => null,
+        'verify_csrf_token' => null,
     ],
 
 ];
