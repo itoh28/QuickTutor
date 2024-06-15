@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'authenticate_session' => AuthenticateSession::class,
             'encrypt_cookies' => EncryptCookies::class,
-            'validate_crsf_token' => VerifyCsrfToken::class,
+            'validate_csrf_token' => VerifyCsrfToken::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
