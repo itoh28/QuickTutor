@@ -68,8 +68,10 @@ const SignUp = () => {
         },
         {
           headers: {
+            accept: 'application/json',
             'X-CSRF-TOKEN': csrfToken,
           },
+          withCredentials: true,
         },
       );
 
