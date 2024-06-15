@@ -25,8 +25,7 @@ class AuthController extends Controller
                 'role_id' => 3
             ]);
 
-            $token = $user->createToken('API Token')->plainTextToken;
-            return response()->json(['user' => new UserResource($user), 'token' => $token], 201);
+            return response()->json(['user' => new UserResource($user)], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'User registration failed', 'error' => $e->getMessage()], 400);
         }
