@@ -35,6 +35,9 @@ const SignUp = () => {
     }
 
     try {
+      const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute('content');
       const response = await axios.post(
         'https://quicktutor.work/api/register',
         {
@@ -43,7 +46,12 @@ const SignUp = () => {
           password: formData.password,
           password_confirmation: formData.passwordConfirm,
         },
-        { withCredentials: true },
+        {
+          withCredentials: true,
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+          },
+        },
       );
 
       const { token, user } = response.data;
