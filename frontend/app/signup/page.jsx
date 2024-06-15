@@ -48,6 +48,18 @@ const SignUp = () => {
     }
 
     try {
+      const csrfToken = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('XSRF-TOKEN='))
+        ?.split('=')[1];
+
+      if (!csrfToken) {
+        console.error('CSRF token not found in cookies');
+        return;
+      } else {
+        console.log('CSRF token:', csrfToken);
+      }
+
       const response = await axios.post(
         'https://quicktutor.work/api/register',
         {
@@ -58,6 +70,9 @@ const SignUp = () => {
         },
         {
           withCredentials: true,
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+          },
         },
       );
 
