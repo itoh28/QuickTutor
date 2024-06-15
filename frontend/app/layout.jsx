@@ -1,7 +1,6 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { useEffect } from 'react';
-import axios from 'axios';
+import GetCsrfToken from './_components/GetCsrfToken';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -11,22 +10,12 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  useEffect(() => {
-    const getCsrfToken = async () => {
-      await axios.get('https://quicktutor.work/sanctum/csrf-cookie', {
-        withCredentials: true,
-      });
-    };
-
-    getCsrfToken();
-  }, []);
-
   return (
     <html lang="ja">
-      <head>
-        <meta name="csrf-token" content="" />
-      </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <GetCsrfToken />
+        {children}
+      </body>
     </html>
   );
 }
