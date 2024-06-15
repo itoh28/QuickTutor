@@ -43,6 +43,7 @@ const SignUp = () => {
           password: formData.password,
           password_confirmation: formData.passwordConfirm,
         },
+        { withCredentials: true },
       );
 
       const { token, user } = response.data;
