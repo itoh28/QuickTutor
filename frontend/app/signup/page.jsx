@@ -24,7 +24,17 @@ const SignUp = () => {
       try {
         axios.defaults.withCredentials = true;
         await axios.get('/sanctum/csrf-cookie');
-        console.log('CSRF token set');
+        const csrfToken = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('XSRF-TOKEN='))
+          ?.split('=')[1];
+
+        if (csrfToken) {
+          axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+          console.log('CSRF token set:', csrfToken);
+        } else {
+          console.error('CSRF token not found in cookies');
+        }
       } catch (error) {
         console.error('Failed to get CSRF token', error);
       }
@@ -47,18 +57,6 @@ const SignUp = () => {
     }
 
     try {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('XSRF-TOKEN='))
-        ?.split('=')[1];
-
-      if (!csrfToken) {
-        console.error('CSRF token not found in cookies');
-        return;
-      } else {
-        console.log('CSRF token:', csrfToken);
-      }
-
       const response = await axios.post(
         '/api/register',
         {
@@ -68,9 +66,6 @@ const SignUp = () => {
           password_confirmation: formData.passwordConfirm,
         },
         {
-          headers: {
-            'X-CSRF-TOKEN': csrfToken,
-          },
           withCredentials: true,
         },
       );
