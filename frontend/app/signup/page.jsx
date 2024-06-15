@@ -22,6 +22,7 @@ const SignUp = () => {
 
     const getCsrfToken = async () => {
       try {
+        axios.defaults.withCredentials = true;
         await axios.get('/sanctum/csrf-cookie');
         console.log('CSRF token set');
       } catch (error) {
@@ -68,7 +69,6 @@ const SignUp = () => {
         },
         {
           headers: {
-            accept: 'application/json',
             'X-CSRF-TOKEN': csrfToken,
           },
           withCredentials: true,

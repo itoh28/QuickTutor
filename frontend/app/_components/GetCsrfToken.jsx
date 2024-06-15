@@ -7,7 +7,8 @@ const GetCsrfToken = () => {
   useEffect(() => {
     const getCsrfToken = async () => {
       try {
-        await axios.get('https://quicktutor.work/sanctum/csrf-cookie', {});
+        axios.defaults.withCredentials = true;
+        await axios.get('/sanctum/csrf-cookie');
         console.log('CSRF token set');
       } catch (error) {
         console.error('Failed to get CSRF token', error);
