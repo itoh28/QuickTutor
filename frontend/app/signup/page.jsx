@@ -19,6 +19,14 @@ const SignUp = () => {
   useEffect(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+
+    const getCsrfToken = async () => {
+      await axios.get('https://quicktutor.work/sanctum/csrf-cookie', {
+        withCredentials: true,
+      });
+    };
+
+    getCsrfToken();
   }, []);
 
   const handleChange = (e) => {
@@ -35,9 +43,6 @@ const SignUp = () => {
     }
 
     try {
-      const csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute('content');
       const response = await axios.post(
         'https://quicktutor.work/api/register',
         {
@@ -48,16 +53,11 @@ const SignUp = () => {
         },
         {
           withCredentials: true,
-          headers: {
-            'X-CSRF-TOKEN': csrfToken,
-          },
         },
       );
 
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
+      const user = response.data.user;
       localStorage.setItem('user', JSON.stringify(user));
-      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
