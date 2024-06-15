@@ -17,7 +17,7 @@ const nextConfig = {
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value: 'X-CSRF-Token, X-Requested-With, Accept, Content-Type',
+            value: '*',
           },
         ],
       },

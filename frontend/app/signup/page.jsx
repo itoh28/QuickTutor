@@ -7,15 +7,6 @@ import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
 import axios from 'axios';
 
-const apiClient = axios.create({
-  baseURL: 'https://quicktutor.work/api',
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
-  withCredentials: true,
-});
-
 const SignUp = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -44,12 +35,15 @@ const SignUp = () => {
     }
 
     try {
-      const response = await apiClient.post('/register', {
-        group_name: formData.group_name,
-        username: formData.username,
-        password: formData.password,
-        password_confirmation: formData.passwordConfirm,
-      });
+      const response = await axios.post(
+        'https://quicktutor.work/api/register',
+        {
+          group_name: formData.group_name,
+          username: formData.username,
+          password: formData.password,
+          password_confirmation: formData.passwordConfirm,
+        },
+      );
 
       const { token, user } = response.data;
       localStorage.setItem('token', token);
