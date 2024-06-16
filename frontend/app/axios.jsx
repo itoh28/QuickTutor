@@ -1,8 +1,9 @@
-import Axios from 'axios';
+import axios from 'axios';
 
-const axios = Axios.create({
+axios.defaults.withCredentials = true;
+
+const api = axios.create({
   baseURL: 'https://quicktutor.work',
-  withCredentials: true,
   withXSRFToken: true,
   xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: {
@@ -10,4 +11,4 @@ const axios = Axios.create({
   },
 });
 
-export default axios;
+export default api;
