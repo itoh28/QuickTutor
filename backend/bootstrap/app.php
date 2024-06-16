@@ -12,10 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // トークンによるCSRF対策が使われないようにする
-        $middleware->removeFromGroup('web', \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
-        // オリジンによるCSRF対策が使われるようにする
-        $middleware->appendToGroup('web', \App\Http\Middleware\VerifyOrigin::class);
+        //
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
