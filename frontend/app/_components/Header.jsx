@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import axios from '../axios';
+import api from '../axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
