@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const fetcher = async (url) => {
-  const response = await axios.get(url);
+  const response = await api.get(url);
   return response.data;
 };
 
@@ -54,7 +54,7 @@ const Header = ({ showUserInfo = 'true' }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/logout');
+      await api.post('/api/logout');
       router.push('/login');
     } catch (error) {
       console.error('Failed to logout', error);
