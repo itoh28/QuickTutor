@@ -1,21 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+// Axiosの設定
+axios.defaults.withCredentials = true;
+
+const api = axios.create({
+  baseURL: 'https://quicktutor.work',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
+
 const fetcher = async (url) => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No token found');
-  }
-  const response = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await api.get(url);
   return response.data;
 };
 
@@ -23,8 +26,31 @@ const Header = ({ showUserInfo = 'true' }) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  useEffect(() => {
+    const getCsrfToken = async () => {
+      try {
+        await api.get('/sanctum/csrf-cookie');
+        const csrfToken = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('XSRF-TOKEN='))
+          ?.split('=')[1];
+
+        if (csrfToken) {
+          api.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+          console.log('CSRF token set:', csrfToken);
+        } else {
+          console.error('CSRF token not found in cookies');
+        }
+      } catch (error) {
+        console.error('Failed to get CSRF token', error);
+      }
+    };
+
+    getCsrfToken();
+  }, []);
+
   const { data: response, error } = useSWR(
-    showUserInfo ? 'https://quicktutor.work/api/user' : null,
+    showUserInfo ? '/api/user' : null,
     fetcher,
   );
 
@@ -54,6 +80,7 @@ const Header = ({ showUserInfo = 'true' }) => {
       </div>
     );
   }
+
   const user = response ? response.data : null;
 
   const toggleDropdown = () => {
@@ -61,20 +88,11 @@ const Header = ({ showUserInfo = 'true' }) => {
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      await axios.post(
-        'https://quicktutor.work/api/logout',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+    try {
+      await api.post('/api/logout');
       router.push('/login');
+    } catch (error) {
+      console.error('Failed to logout', error);
     }
   };
 
