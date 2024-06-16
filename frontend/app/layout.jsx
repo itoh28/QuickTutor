@@ -16,7 +16,6 @@ export default function RootLayout({ children }) {
         <meta name="description" content={metadata.description} />
       </head>
       <body className={inter.className}>
-        <GetCsrfToken />
         {children}
       </body>
     </html>
