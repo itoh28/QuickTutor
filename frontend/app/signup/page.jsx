@@ -23,7 +23,7 @@ const SignUp = () => {
     const getCsrfToken = async () => {
       try {
         axios.defaults.withCredentials = true;
-        await axios.get('/sanctum/csrf-cookie');
+        await axios.get('https://quicktutor.work/sanctum/csrf-cookie');
         const csrfToken = document.cookie
           .split('; ')
           .find((row) => row.startsWith('XSRF-TOKEN='))
