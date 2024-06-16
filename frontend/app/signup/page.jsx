@@ -5,7 +5,7 @@ import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
-import axios from '../axios';
+import api from '../axios';
 
 const SignUp = () => {
   const router = useRouter();
