@@ -5,7 +5,8 @@ import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
-import axios from '../axios';
+import axios from 'axios';
+import apiClient from '../apiClient.jsx';
 
 const SignUp = () => {
   const router = useRouter();
@@ -19,18 +20,6 @@ const SignUp = () => {
   useEffect(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-
-    const getCsrfToken = async () => {
-      try {
-        axios.defaults.withCredentials = true;
-        await axios.get('/sanctum/csrf-cookie');
-        console.log('CSRF token set');
-      } catch (error) {
-        console.error('Failed to get CSRF token', error);
-      }
-    };
-
-    getCsrfToken();
   }, []);
 
   const handleChange = (e) => {
@@ -47,36 +36,17 @@ const SignUp = () => {
     }
 
     try {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('XSRF-TOKEN='))
-        ?.split('=')[1];
+      const response = await apiClient.post('/api/register', {
+        group_name: formData.group_name,
+        username: formData.username,
+        password: formData.password,
+        password_confirmation: formData.passwordConfirm,
+      });
 
-      if (!csrfToken) {
-        console.error('CSRF token not found in cookies');
-        return;
-      } else {
-        console.log('CSRF token:', csrfToken);
-      }
-
-      const response = await axios.post(
-        '/api/register',
-        {
-          group_name: formData.group_name,
-          username: formData.username,
-          password: formData.password,
-          password_confirmation: formData.passwordConfirm,
-        },
-        {
-          headers: {
-            'X-CSRF-TOKEN': csrfToken,
-          },
-          withCredentials: true,
-        },
-      );
-
-      const user = response.data.user;
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
