@@ -7,9 +7,12 @@ const apiClient = axios.create({
   },
 });
 
-const token = localStorage.getItem('token');
-if (token) {
-  apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+// クライアントサイドでのみ localStorage にアクセス
+if (typeof window !== 'undefined') {
+  const token = localStorage.getItem('token');
+  if (token) {
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
 }
 
 export default apiClient;
