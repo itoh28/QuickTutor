@@ -17,8 +17,10 @@ const SignUp = () => {
   });
 
   useEffect(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -43,9 +45,11 @@ const SignUp = () => {
       });
 
       const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      }
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
