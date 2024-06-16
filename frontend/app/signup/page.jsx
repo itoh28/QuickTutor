@@ -6,7 +6,7 @@ import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
 import axios from '../axios';
-import GetCsrfToken from './GetCsrfToken';
+import GetCsrfToken from '../_components/GetCsrfToken.jsx';
 
 const SignUp = () => {
   const router = useRouter();
