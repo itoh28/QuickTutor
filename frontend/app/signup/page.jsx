@@ -17,13 +17,9 @@ const SignUp = () => {
   });
 
   useEffect(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-
     const getCsrfToken = async () => {
       try {
-        axios.defaults.withCredentials = true;
-        await axios.get('https://quicktutor.work/sanctum/csrf-cookie');
+        await axios.get('/sanctum/csrf-cookie');
         const csrfToken = document.cookie
           .split('; ')
           .find((row) => row.startsWith('XSRF-TOKEN='))
@@ -57,18 +53,12 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post(
-        'https://quicktutor.work/api/register',
-        {
-          group_name: formData.group_name,
-          username: formData.username,
-          password: formData.password,
-          password_confirmation: formData.passwordConfirm,
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await axios.post('/api/register', {
+        group_name: formData.group_name,
+        username: formData.username,
+        password: formData.password,
+        password_confirmation: formData.passwordConfirm,
+      });
 
       const user = response.data.user;
       localStorage.setItem('user', JSON.stringify(user));
