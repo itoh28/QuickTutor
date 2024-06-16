@@ -1,6 +1,5 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
-import GetCsrfToken from './_components/GetCsrfToken';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,7 +16,6 @@ export default function RootLayout({ children }) {
         <meta name="description" content={metadata.description} />
       </head>
       <body className={inter.className}>
-        <GetCsrfToken />
         {children}
       </body>
     </html>
