@@ -19,14 +19,14 @@ const SignUp = () => {
   useEffect(() => {
     const getCsrfToken = async () => {
       try {
-        await axios.get('/sanctum/csrf-cookie');
+        await api.get('/sanctum/csrf-cookie');
         const csrfToken = document.cookie
           .split('; ')
           .find((row) => row.startsWith('XSRF-TOKEN='))
           ?.split('=')[1];
 
         if (csrfToken) {
-          axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+          api.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
           console.log('CSRF token set:', csrfToken);
         } else {
           console.error('CSRF token not found in cookies');
@@ -53,7 +53,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post('/api/register', {
+      const response = await api.post('/api/register', {
         group_name: formData.group_name,
         username: formData.username,
         password: formData.password,
