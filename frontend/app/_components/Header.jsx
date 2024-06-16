@@ -2,20 +2,12 @@
 
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import axios from 'axios';
+import api from '../axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const fetcher = async (url) => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No token found');
-  }
-  const response = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await api.get(url);
   return response.data;
 };
 
@@ -24,7 +16,7 @@ const Header = ({ showUserInfo = 'true' }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { data: response, error } = useSWR(
-    showUserInfo ? 'https://quicktutor.work/api/user' : null,
+    showUserInfo ? '/api/user' : null,
     fetcher,
   );
 
@@ -61,20 +53,11 @@ const Header = ({ showUserInfo = 'true' }) => {
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      await axios.post(
-        'https://quicktutor.work/api/logout',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+    try {
+      await api.post('/api/logout');
       router.push('/login');
+    } catch (error) {
+      console.error('Failed to logout', error);
     }
   };
 

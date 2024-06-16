@@ -1,11 +1,9 @@
 <?php
 
-use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Laravel\Sanctum\Http\Middleware\AuthenticateSession;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,13 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
-        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
-
-        $middleware->alias([
-            'authenticate_session' => AuthenticateSession::class,
-            'encrypt_cookies' => EncryptCookies::class,
-            'validate_csrf_token' => VerifyCsrfToken::class,
-        ]);
+        $middleware->append(HandleCors::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

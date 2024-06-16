@@ -5,7 +5,36 @@ import Header from '../_components/Header.jsx';
 import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
-import axios from '../axios';
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
+
+const api = axios.create({
+  baseURL: 'https://quicktutor.work',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
+
+const getCsrfToken = async () => {
+  try {
+    await api.get('/sanctum/csrf-cookie');
+    const csrfToken = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('XSRF-TOKEN='))
+      ?.split('=')[1];
+
+    if (csrfToken) {
+      api.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+      console.log('CSRF token set:', csrfToken);
+    } else {
+      console.error('CSRF token not found in cookies');
+    }
+  } catch (error) {
+    console.error('Failed to get CSRF token', error);
+  }
+};
 
 const SignUp = () => {
   const router = useRouter();
@@ -17,19 +46,6 @@ const SignUp = () => {
   });
 
   useEffect(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-
-    const getCsrfToken = async () => {
-      try {
-        axios.defaults.withCredentials = true;
-        await axios.get('/sanctum/csrf-cookie');
-        console.log('CSRF token set');
-      } catch (error) {
-        console.error('Failed to get CSRF token', error);
-      }
-    };
-
     getCsrfToken();
   }, []);
 
@@ -47,33 +63,16 @@ const SignUp = () => {
     }
 
     try {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('XSRF-TOKEN='))
-        ?.split('=')[1];
-
-      if (!csrfToken) {
-        console.error('CSRF token not found in cookies');
-        return;
-      } else {
-        console.log('CSRF token:', csrfToken);
-      }
-
-      const response = await axios.post(
-        '/api/register',
-        {
-          group_name: formData.group_name,
-          username: formData.username,
-          password: formData.password,
-          password_confirmation: formData.passwordConfirm,
-        },
-        {
-          headers: {
-            'X-CSRF-TOKEN': csrfToken,
-          },
-          withCredentials: true,
-        },
+      console.log(
+        'CSRF token before request:',
+        api.defaults.headers.common['X-CSRF-TOKEN'],
       );
+      const response = await api.post('/api/register', {
+        group_name: formData.group_name,
+        username: formData.username,
+        password: formData.password,
+        password_confirmation: formData.passwordConfirm,
+      });
 
       const user = response.data.user;
       localStorage.setItem('user', JSON.stringify(user));
