@@ -6,7 +6,6 @@ import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
 import axios from '../axios';
-import GetCsrfToken from './GetCsrfToken';
 
 const SignUp = () => {
   const router = useRouter();
@@ -20,6 +19,28 @@ const SignUp = () => {
   useEffect(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+
+    const getCsrfToken = async () => {
+      try {
+        axios.defaults.withCredentials = true;
+        await axios.get('https://quicktutor.work/sanctum/csrf-cookie');
+        const csrfToken = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('XSRF-TOKEN='))
+          ?.split('=')[1];
+
+        if (csrfToken) {
+          axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+          console.log('CSRF token set:', csrfToken);
+        } else {
+          console.error('CSRF token not found in cookies');
+        }
+      } catch (error) {
+        console.error('Failed to get CSRF token', error);
+      }
+    };
+
+    getCsrfToken();
   }, []);
 
   const handleChange = (e) => {
@@ -144,7 +165,6 @@ const SignUp = () => {
           </form>
         </div>
       </div>
-      <GetCsrfToken />
     </div>
   );
 };
