@@ -8,17 +8,16 @@ const GetCsrfToken = () => {
     const getCsrfToken = async () => {
       try {
         axios.defaults.withCredentials = true;
-        await axios.get('https://quicktutor.work/sanctum/csrf-cookie');
-        const csrfToken = document.cookie
-          .split('; ')
-          .find((row) => row.startsWith('XSRF-TOKEN='))
-          ?.split('=')[1];
+        const response = await axios.get(
+          'https://quicktutor.work/sanctum/csrf-cookie',
+        );
+        const csrfToken = response.headers['x-xsrf-token'];
 
         if (csrfToken) {
           axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
           console.log('CSRF token set:', csrfToken);
         } else {
-          console.error('CSRF token not found in cookies');
+          console.error('CSRF token not found in response headers');
         }
       } catch (error) {
         console.error('Failed to get CSRF token', error);
