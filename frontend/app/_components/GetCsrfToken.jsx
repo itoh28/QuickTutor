@@ -7,7 +7,9 @@ const GetCsrfToken = () => {
   useEffect(() => {
     const getCsrfToken = async () => {
       try {
-        await api.get('/sanctum/csrf-cookie');
+        await api.get('/sanctum/csrf-cookie', {
+          withCredentials: true,
+        });
         const csrfToken = document.cookie
           .split('; ')
           .find((row) => row.startsWith('XSRF-TOKEN='))
