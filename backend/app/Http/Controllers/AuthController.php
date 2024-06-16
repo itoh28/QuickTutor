@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -25,7 +26,12 @@ class AuthController extends Controller
                 'role_id' => 3
             ]);
 
-            return response()->json(['user' => new UserResource($user)], 201);
+            $token = JWTAuth::fromUser($user);
+
+            return response()->json([
+                'user' => new UserResource($user),
+                'token' => $token
+            ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'User registration failed', 'error' => $e->getMessage()], 400);
         }

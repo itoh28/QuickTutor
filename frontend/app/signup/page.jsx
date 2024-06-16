@@ -6,7 +6,6 @@ import Button from '../_components/Button.jsx';
 import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
 import api from '../axios';
-import GetCsrfToken from '../_components/GetCsrfToken';
 
 const SignUp = () => {
   const router = useRouter();
@@ -31,10 +30,6 @@ const SignUp = () => {
     }
 
     try {
-      console.log(
-        'CSRF token before request:',
-        api.defaults.headers.common['X-CSRF-TOKEN'],
-      );
       const response = await api.post('/api/register', {
         group_name: formData.group_name,
         username: formData.username,
@@ -42,8 +37,9 @@ const SignUp = () => {
         password_confirmation: formData.passwordConfirm,
       });
 
-      const user = response.data.user;
+      const { user, token } = response.data;
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', token);
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
@@ -53,7 +49,6 @@ const SignUp = () => {
   return (
     <div className="min-h-screen bg-baseColor flex flex-col">
       <Header showUserInfo={false} />
-      <GetCsrfToken />
       <div className="flex-grow flex justify-center my-10">
         <div className="w-full max-w-md">
           <div className="text-center py-4 rounded-t bg-main text-white text-2xl font-bold">
