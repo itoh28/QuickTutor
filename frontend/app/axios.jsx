@@ -1,11 +1,18 @@
-import Axios from 'axios';
+import axios from 'axios';
 
-const apiClient = Axios.create({
+const apiClient = axios.create({
   baseURL: 'https://quicktutor.work',
-  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+// クライアントサイドでのみ localStorage にアクセス
+if (typeof window !== 'undefined') {
+  const token = localStorage.getItem('token');
+  if (token) {
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
+}
 
 export default apiClient;
