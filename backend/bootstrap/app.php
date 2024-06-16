@@ -1,12 +1,16 @@
 <?php
 
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Middleware\HandleCors;
-use Laravel\Sanctum\Http\Middleware\AuthenticateSession;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -18,12 +22,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
         $middleware->append(HandleCors::class);
-
-        $middleware->alias([
-            'authenticate_session' => AuthenticateSession::class,
-            'encrypt_cookies' => EncryptCookies::class,
-            'validate_csrf_token' => VerifyCsrfToken::class,
-        ]);
+        $middleware->append(EncryptCookies::class);
+        $middleware->append(AddQueuedCookiesToResponse::class);
+        $middleware->append(StartSession::class);
+        $middleware->append(ShareErrorsFromSession::class);
+        $middleware->append(VerifyCsrfToken::class);
+        $middleware->append(SubstituteBindings::class);
+        $middleware->append(EnsureFrontendRequestsAreStateful::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
