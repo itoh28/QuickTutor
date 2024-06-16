@@ -53,6 +53,10 @@ const SignUp = () => {
     }
 
     try {
+      console.log(
+        'CSRF token before request:',
+        api.defaults.headers.common['X-CSRF-TOKEN'],
+      );
       const response = await api.post('/api/register', {
         group_name: formData.group_name,
         username: formData.username,
