@@ -15,6 +15,7 @@ const api = axios.create({
   baseURL: 'https://quicktutor.work',
   withCredentials: true,
   withXSRFToken: true,
+  xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: {
     'Content-Type': 'application/json',
