@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import useSWR from 'swr';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-// Axiosの設定
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
@@ -25,29 +24,6 @@ const fetcher = async (url) => {
 const Header = ({ showUserInfo = 'true' }) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  useEffect(() => {
-    const getCsrfToken = async () => {
-      try {
-        await api.get('/sanctum/csrf-cookie');
-        const csrfToken = document.cookie
-          .split('; ')
-          .find((row) => row.startsWith('XSRF-TOKEN='))
-          ?.split('=')[1];
-
-        if (csrfToken) {
-          api.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
-          console.log('CSRF token set:', csrfToken);
-        } else {
-          console.error('CSRF token not found in cookies');
-        }
-      } catch (error) {
-        console.error('Failed to get CSRF token', error);
-      }
-    };
-
-    getCsrfToken();
-  }, []);
 
   const { data: response, error } = useSWR(
     showUserInfo ? '/api/user' : null,

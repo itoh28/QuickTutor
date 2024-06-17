@@ -7,10 +7,13 @@ import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
 import axios from 'axios';
 
+// Axiosの設定
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
   baseURL: 'https://quicktutor.work',
+  withXSRFToken: true,
+  xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -63,10 +66,18 @@ const SignUp = () => {
     }
 
     try {
+      // CSRFトークンの確認
       console.log(
         'CSRF token before request:',
         api.defaults.headers.common['X-CSRF-TOKEN'],
       );
+
+      // デバッグ処理: トークンがヘッダーに設定されているか確認
+      if (!api.defaults.headers.common['X-CSRF-TOKEN']) {
+        console.error('CSRF token is not set in headers');
+        return;
+      }
+
       const response = await api.post('/api/register', {
         group_name: formData.group_name,
         username: formData.username,
@@ -79,6 +90,9 @@ const SignUp = () => {
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
+      if (error.response && error.response.status === 419) {
+        console.error('CSRF token mismatch or expired');
+      }
     }
   };
 
