@@ -9,14 +9,17 @@ import axios from 'axios';
 
 // Axiosの設定
 axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
 
 const api = axios.create({
   baseURL: 'https://quicktutor.work',
+  withCredentials: true,
   withXSRFToken: true,
   xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    Referer: 'https://www.quicktutor.work',
   },
 });
 
