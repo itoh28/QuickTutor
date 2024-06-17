@@ -2,9 +2,19 @@
 
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import api from '../axios';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+
+axios.defaults.withCredentials = true;
+
+const api = axios.create({
+  baseURL: 'https://quicktutor.work',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
 
 const fetcher = async (url) => {
   const response = await api.get(url);
@@ -46,6 +56,7 @@ const Header = ({ showUserInfo = 'true' }) => {
       </div>
     );
   }
+
   const user = response ? response.data : null;
 
   const toggleDropdown = () => {
