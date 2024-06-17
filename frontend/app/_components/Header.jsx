@@ -15,7 +15,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    Referer: 'https://www.quicktutor.work',
+    Origin: 'https://www.quicktutor.work',
   },
 });
 
