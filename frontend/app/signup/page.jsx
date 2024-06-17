@@ -39,6 +39,17 @@ const getCsrfToken = async () => {
   }
 };
 
+// リクエストインターセプターを追加して、リクエストヘッダーをデバッグログに出力
+api.interceptors.request.use(
+  (config) => {
+    console.log('Request headers before sending:', config.headers);
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
 const SignUp = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({

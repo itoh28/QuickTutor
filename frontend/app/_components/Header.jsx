@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+// Axiosの設定
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
@@ -15,6 +16,17 @@ const api = axios.create({
     Accept: 'application/json',
   },
 });
+
+// リクエストインターセプターを追加して、リクエストヘッダーをデバッグログに出力
+api.interceptors.request.use(
+  (config) => {
+    console.log('Request headers before sending:', config.headers);
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
 
 const fetcher = async (url) => {
   const response = await api.get(url);
