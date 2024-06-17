@@ -23,6 +23,8 @@ const api = axios.create({
   },
 });
 
+console.log('API Base URL:', process.env.NEXT_PUBLIC_API_BASE_UR);
+
 const getCsrfToken = async () => {
   try {
     await api.get('/sanctum/csrf-cookie');
