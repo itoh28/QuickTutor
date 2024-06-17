@@ -96,6 +96,9 @@ const SignUp = () => {
         password_confirmation: formData.passwordConfirm,
       });
 
+      // サーバーからのレスポンスヘッダーをログに出力
+      console.log('Response headers:', response.headers);
+
       const user = response.data.user;
       localStorage.setItem('user', JSON.stringify(user));
       router.push('/view-manuals');
@@ -103,6 +106,10 @@ const SignUp = () => {
       console.error('アカウントを登録できませんでした', error);
       if (error.response && error.response.status === 419) {
         console.error('CSRF token mismatch or expired');
+      }
+      // エラーレスポンスヘッダーをログに出力
+      if (error.response) {
+        console.log('Error response headers:', error.response.headers);
       }
     }
   };
