@@ -1,99 +1,178 @@
-// 'use client';
+'use client';
 
-// import React, { useState } from 'react';
-// import useSWR from 'swr';
-// import api from '../axios';
-// import { useRouter } from 'next/navigation';
-// import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
+import Header from '../_components/Header.jsx';
+import Button from '../_components/Button.jsx';
+import Link from 'next/link.js';
+import { useRouter } from 'next/navigation.js';
+import axios from 'axios';
 
-// const fetcher = async (url) => {
-//   const response = await api.get(url);
-//   return response.data;
-// };
+axios.defaults.withCredentials = true;
 
-// const Header = ({ showUserInfo = 'true' }) => {
-//   const router = useRouter();
-//   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+const api = axios.create({
+  baseURL: 'https://quicktutor.work',
+  withXSRFToken: true,
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
 
-//   const { data: response, error } = useSWR(
-//     showUserInfo ? '/api/user' : null,
-//     fetcher,
-//   );
+const getCsrfToken = async () => {
+  try {
+    await api.get('/sanctum/csrf-cookie');
+    const csrfToken = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('XSRF-TOKEN='))
+      ?.split('=')[1];
 
-//   if (error) {
-//     console.error('Error fetching user:', error);
-//     return (
-//       <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
-//         <div className="text-2xl font-bold ml-2">
-//           <Link href={'/'}>
-//             <button>QuickTutor</button>
-//           </Link>
-//         </div>
-//         <div className="text-normal">ユーザーデータを取得できませんでした</div>
-//       </div>
-//     );
-//   }
+    if (csrfToken) {
+      api.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+      console.log('CSRF token set:', csrfToken);
+    } else {
+      console.error('CSRF token not found in cookies');
+    }
+  } catch (error) {
+    console.error('Failed to get CSRF token', error);
+  }
+};
 
-//   if (showUserInfo && !response) {
-//     return (
-//       <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
-//         <div className="text-2xl font-bold ml-2">
-//           <Link href={'/'}>
-//             <button>QuickTutor</button>
-//           </Link>
-//         </div>
-//         <div className="text-normal">Loading...</div>
-//       </div>
-//     );
-//   }
-//   const user = response ? response.data : null;
+const SignUp = () => {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    group_name: '',
+    username: '',
+    password: '',
+    passwordConfirm: '',
+  });
 
-//   const toggleDropdown = () => {
-//     setIsDropdownOpen(!isDropdownOpen);
-//   };
+  useEffect(() => {
+    getCsrfToken();
+  }, []);
 
-//   const handleLogout = async () => {
-//     try {
-//       await api.post('/api/logout');
-//       router.push('/login');
-//     } catch (error) {
-//       console.error('Failed to logout', error);
-//     }
-//   };
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
 
-//   return (
-//     <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
-//       <div className="text-2xl font-bold ml-2">
-//         <Link href={'/'}>
-//           <button>QuickTutor</button>
-//         </Link>
-//       </div>
-//       {showUserInfo && user && (
-//         <div className="text-xl font-bold flex space-x-12 mr-4">
-//           <span>{user.role}</span>
-//           <div>
-//             <button onClick={toggleDropdown}>{user.username} ▼</button>
-//             {isDropdownOpen && (
-//               <div className="absolute right-4 mt-2 w-40 text-black text-base bg-white border border-main">
-//                 <button
-//                   onClick={handleLogout}
-//                   className="w-full px-4 py-2 text-center hover:bg-gray-200 border-b border-main"
-//                 >
-//                   ログアウト
-//                 </button>
-//                 <button className="w-full px-4 py-2 text-center bg-white hover:bg-gray-200 border-b border-main">
-//                   ユーザー名変更
-//                 </button>
-//                 <button className="w-full px-4 py-2 text-center hover:bg-gray-200">
-//                   ユーザー管理
-//                 </button>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-// export default Header;
+    if (formData.password !== formData.passwordConfirm) {
+      console.error('パスワードが一致しません');
+      return;
+    }
+
+    try {
+      console.log(
+        'CSRF token before request:',
+        api.defaults.headers.common['X-CSRF-TOKEN'],
+      );
+      const response = await api.post('/api/register', {
+        group_name: formData.group_name,
+        username: formData.username,
+        password: formData.password,
+        password_confirmation: formData.passwordConfirm,
+      });
+
+      const user = response.data.user;
+      localStorage.setItem('user', JSON.stringify(user));
+      router.push('/view-manuals');
+    } catch (error) {
+      console.error('アカウントを登録できませんでした', error);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-baseColor flex flex-col">
+      <Header showUserInfo={false} />
+      <div className="flex-grow flex justify-center my-10">
+        <div className="w-full max-w-md">
+          <div className="text-center py-4 rounded-t bg-main text-white text-2xl font-bold">
+            Sign up
+          </div>
+          <form
+            className="bg-white shadow-md rounded-b px-8 py-6"
+            onSubmit={handleSubmit}
+          >
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="group_name"
+              >
+                会社/団体名
+              </label>
+              <input
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="group_name"
+                type="text"
+                placeholder="例）株式会社マニュアル"
+                value={formData.group_name}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="username"
+              >
+                ユーザー名
+              </label>
+              <input
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                id="username"
+                type="text"
+                placeholder="例）田中太郎"
+                value={formData.username}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="password"
+              >
+                パスワード
+              </label>
+              <input
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                id="password"
+                type="password"
+                placeholder="8文字以上の英数字"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="passwordConfirm"
+              >
+                パスワード（確認用）
+              </label>
+              <input
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-6 leading-tight focus:outline-none focus:shadow-outline"
+                id="passwordConfirm"
+                type="password"
+                placeholder="パスワード再入力"
+                value={formData.passwordConfirm}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="flex justify-center">
+              <Button text="登録" type="submit" />
+            </div>
+            <div className="flex justify-center text-sm hover:text-blue-400 pt-6">
+              <Link href="login">
+                <p>ログインはこちら</p>
+              </Link>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SignUp;
