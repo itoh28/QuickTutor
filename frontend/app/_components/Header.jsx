@@ -12,10 +12,12 @@ axios.defaults.withXSRFToken = true;
 
 const api = axios.create({
   baseURL: 'https://quicktutor.work',
+  withCredentials: true,
+  withXSRFToken: true,
+  xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    Origin: 'https://www.quicktutor.work',
   },
 });
 
