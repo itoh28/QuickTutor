@@ -7,12 +7,11 @@ import Link from 'next/link.js';
 import { useRouter } from 'next/navigation.js';
 import axios from 'axios';
 
-// Axiosの設定
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 
 const api = axios.create({
-  baseURL: 'https://quicktutor.work',
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true,
   withXSRFToken: true,
   xsrfCookieName: 'XSRF-TOKEN',
