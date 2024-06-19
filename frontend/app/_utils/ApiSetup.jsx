@@ -30,4 +30,4 @@ const getCsrfToken = async () => {
   }
 };
 
-export default { api, getCsrfToken };
+export { api, getCsrfToken };
