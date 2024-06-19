@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Header from '../components/Header.jsx';
-import Button from '../components/Button.jsx';
+import Header from '../_components/Header';
+import Button from '../_components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api, getCsrfToken } from '../utils/ApiSetup';
