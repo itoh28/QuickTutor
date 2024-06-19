@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { api } from '../utils/ApiSetup';
+import { api } from '../_utils/ApiSetup';
 
 const fetcher = async (url) => {
   const response = await api.get(url);
