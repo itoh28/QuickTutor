@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Header from '../_components/Header.jsx';
-import Button from '../_components/Button.jsx';
-import Link from 'next/link.js';
-import axios from 'axios';
-import { useRouter } from 'next/navigation.js';
+import React, { useState, useEffect } from 'react';
+import Header from '../_components/Header';
+import Button from '../_components/Button';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { api, getCsrfToken } from '../_utils/ApiSetup';
 
-const LogIn = () => {
+const Login = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
     username: '',
@@ -15,8 +15,7 @@ const LogIn = () => {
   });
 
   useEffect(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    getCsrfToken();
   }, []);
 
   const handleChange = (e) => {
@@ -26,17 +25,21 @@ const LogIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.post(
-        'https://quicktutor.work/api/login',
-        formData,
-      );
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
+      const response = await api.post('/api/login', {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      const user = response.data.user;
       localStorage.setItem('user', JSON.stringify(user));
       router.push('/view-manuals');
     } catch (error) {
-      console.error('ログインに失敗しました', error);
+      console.error('ログインできませんでした', error);
+      if (error.response && error.response.status === 419) {
+        console.error('CSRF token mismatch or expired');
+      }
     }
   };
 
@@ -46,7 +49,7 @@ const LogIn = () => {
       <div className="flex-grow flex justify-center my-10">
         <div className="w-full max-w-md">
           <div className="text-center py-4 rounded-t bg-main text-white text-2xl font-bold">
-            Log in
+            Login
           </div>
           <form
             className="bg-white shadow-md rounded-b px-8 py-6"
@@ -60,9 +63,10 @@ const LogIn = () => {
                 ユーザー名
               </label>
               <input
-                className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="username"
                 type="text"
+                placeholder="ユーザー名"
                 value={formData.username}
                 onChange={handleChange}
               />
@@ -78,16 +82,17 @@ const LogIn = () => {
                 className="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                 id="password"
                 type="password"
+                placeholder="パスワード"
                 value={formData.password}
                 onChange={handleChange}
               />
             </div>
-            <div className="flex justify-center my-8">
+            <div className="flex justify-center">
               <Button text="ログイン" type="submit" />
             </div>
-            <div className="flex justify-center text-sm hover:text-blue-400">
+            <div className="flex justify-center text-sm hover:text-blue-400 pt-6">
               <Link href="signup">
-                <p>新規登録がまだの方はこちら</p>
+                <p>アカウント作成はこちら</p>
               </Link>
             </div>
           </form>
@@ -97,4 +102,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default Login;

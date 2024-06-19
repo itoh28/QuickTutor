@@ -1,55 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Header from '../_components/Header.jsx';
-import Button from '../_components/Button.jsx';
-import Link from 'next/link.js';
-import { useRouter } from 'next/navigation.js';
-import axios from 'axios';
-
-axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
-
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    // prettier-ignore
-    'Accept': 'application/json',
-  },
-});
-
-console.log('API Base URL:', process.env.NEXT_PUBLIC_API_BASE_UR);
-
-const getCsrfToken = async () => {
-  try {
-    await api.get('/sanctum/csrf-cookie');
-    const csrfToken = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('XSRF-TOKEN='))
-      ?.split('=')[1];
-
-    if (csrfToken) {
-      api.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
-      console.log('CSRF token set:', csrfToken);
-    } else {
-      console.error('CSRF token not found in cookies');
-    }
-  } catch (error) {
-    console.error('Failed to get CSRF token', error);
-  }
-};
-
-// リクエストインターセプターを追加して、リクエストヘッダーをデバッグログに出力
-api.interceptors.request.use(
-  (config) => {
-    console.log('Request headers before sending:', config.headers);
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+import Header from '../_components/Header';
+import Button from '../_components/Button';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { api, getCsrfToken } from '../_utils/ApiSetup';
 
 const SignUp = () => {
   const router = useRouter();
@@ -78,27 +34,12 @@ const SignUp = () => {
     }
 
     try {
-      // CSRFトークンの確認
-      console.log(
-        'CSRF token before request:',
-        api.defaults.headers.common['X-CSRF-TOKEN'],
-      );
-
-      // デバッグ処理: トークンがヘッダーに設定されているか確認
-      if (!api.defaults.headers.common['X-CSRF-TOKEN']) {
-        console.error('CSRF token is not set in headers');
-        return;
-      }
-
       const response = await api.post('/api/register', {
         group_name: formData.group_name,
         username: formData.username,
         password: formData.password,
         password_confirmation: formData.passwordConfirm,
       });
-
-      // サーバーからのレスポンスヘッダーをログに出力
-      console.log('Response headers:', response.headers);
 
       const user = response.data.user;
       localStorage.setItem('user', JSON.stringify(user));
@@ -107,10 +48,6 @@ const SignUp = () => {
       console.error('アカウントを登録できませんでした', error);
       if (error.response && error.response.status === 419) {
         console.error('CSRF token mismatch or expired');
-      }
-      // エラーレスポンスヘッダーをログに出力
-      if (error.response) {
-        console.log('Error response headers:', error.response.headers);
       }
     }
   };
