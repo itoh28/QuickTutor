@@ -2,33 +2,9 @@
 
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
-// Axiosの設定
-axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
-
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    // prettier-ignore
-    'Accept': 'application/json',
-  },
-});
-
-// リクエストインターセプターを追加して、リクエストヘッダーをデバッグログに出力
-api.interceptors.request.use(
-  (config) => {
-    console.log('Request headers before sending:', config.headers);
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+import { api } from '../utils/ApiSetup';
 
 const fetcher = async (url) => {
   const response = await api.get(url);
