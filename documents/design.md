@@ -18,5 +18,7 @@
 [別ファイル参照](https://github.com/itoh28/QuickTutor/blob/main/documents/table_definition.md)
 
 ## システム構成図
-![image](https://github.com/itoh28/QuickTutor/assets/150091562/07fc125a-be39-4482-98fc-73aba79f49f8)
+![image](https://github.com/itoh28/QuickTutor/assets/150091562/9927cc04-04be-425e-a9f7-64ca1e969d2b)
+
+
 
