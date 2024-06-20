@@ -3,7 +3,7 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 
-const api = axios.create({
+const Api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -11,23 +11,13 @@ const api = axios.create({
   },
 });
 
-const getCsrfToken = async () => {
+const GetCsrfToken = async () => {
   try {
-    await api.get('/sanctum/csrf-cookie');
-    const csrfToken = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('XSRF-TOKEN='))
-      ?.split('=')[1];
-
-    if (csrfToken) {
-      api.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
-      console.log('CSRF token set:', csrfToken);
-    } else {
-      console.error('CSRF token not found in cookies');
-    }
+    await Api.get('/sanctum/csrf-cookie');
+    console.log('CSRF cookie set successfully.');
   } catch (error) {
     console.error('Failed to get CSRF token', error);
   }
 };
 
-export { api, getCsrfToken };
+export { Api, GetCsrfToken };
