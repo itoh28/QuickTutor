@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { api } from '../_utils/ApiSetup';
+import { Api } from '../_utils/ApiSetup';
 
 const fetcher = async (url) => {
-  const response = await api.get(url);
+  const response = await Api.get(url);
   return response.data;
 };
 
@@ -55,7 +55,7 @@ const Header = ({ showUserInfo = 'true' }) => {
 
   const handleLogout = async () => {
     try {
-      await api.post('/api/logout');
+      await Api.post('/api/logout');
       router.push('/login');
     } catch (error) {
       console.error('Failed to logout', error);

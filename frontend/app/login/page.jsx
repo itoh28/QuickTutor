@@ -5,7 +5,7 @@ import Header from '../_components/Header';
 import Button from '../_components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { api, getCsrfToken } from '../_utils/ApiSetup';
+import { Api, GetCsrfToken } from '../_utils/ApiSetup';
 
 const Login = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const Login = () => {
   });
 
   useEffect(() => {
-    getCsrfToken();
+    GetCsrfToken();
   }, []);
 
   const handleChange = (e) => {
@@ -27,7 +27,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await api.post('/api/login', {
+      const response = await Api.post('/api/login', {
         username: formData.username,
         password: formData.password,
       });

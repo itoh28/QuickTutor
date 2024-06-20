@@ -5,7 +5,7 @@ import Header from '../_components/Header';
 import Button from '../_components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { api, getCsrfToken } from '../_utils/ApiSetup';
+import { Api, GetCsrfToken } from '../_utils/ApiSetup';
 
 const SignUp = () => {
   const router = useRouter();
@@ -17,7 +17,7 @@ const SignUp = () => {
   });
 
   useEffect(() => {
-    getCsrfToken();
+    GetCsrfToken();
   }, []);
 
   const handleChange = (e) => {
@@ -34,7 +34,8 @@ const SignUp = () => {
     }
 
     try {
-      const response = await api.post('/api/register', {
+      await GetCsrfToken();
+      const response = await Api.post('/api/register', {
         group_name: formData.group_name,
         username: formData.username,
         password: formData.password,
@@ -43,6 +44,13 @@ const SignUp = () => {
 
       const user = response.data.user;
       localStorage.setItem('user', JSON.stringify(user));
+
+      const loginResponse = await Api.post('/api/login', {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      console.log('Logged in successfully:', loginResponse.data.user);
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
