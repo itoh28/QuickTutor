@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Api } from '../_utils/ApiSetup';
+import { Api, GetCsrfToken } from '../_utils/ApiSetup';
 
 const fetcher = async (url) => {
   const response = await Api.get(url);
@@ -14,6 +14,10 @@ const fetcher = async (url) => {
 const Header = ({ showUserInfo = 'true' }) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    GetCsrfToken();
+  }, []);
 
   const { data: response, error } = useSWR(
     showUserInfo ? '/api/user' : null,
