@@ -3,8 +3,11 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 
+const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+console.log('API Base URL:', baseURL);
+
 const Api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
