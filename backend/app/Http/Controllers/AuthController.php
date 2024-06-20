@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -45,6 +46,10 @@ class AuthController extends Controller
     public function getUser()
     {
         $user = Auth::user();
+        if (!$user) {
+            Log::info('User not authenticated');
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
         return new UserResource($user);
     }
 
