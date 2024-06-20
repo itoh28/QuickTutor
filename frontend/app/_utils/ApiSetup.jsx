@@ -14,31 +14,10 @@ const Api = axios.create({
   },
 });
 
-Api.interceptors.request.use((request) => {
-  console.log('Starting Request', request);
-  return request;
-});
-
-Api.interceptors.response.use(
-  (response) => {
-    console.log('Response:', response);
-    return response;
-  },
-  (error) => {
-    console.error('Response Error:', error);
-    if (error.response) {
-      console.error('Response Error Data:', error.response.data);
-      console.error('Response Error Status:', error.response.status);
-      console.error('Response Error Headers:', error.response.headers);
-    }
-    return Promise.reject(error);
-  },
-);
-
 const GetCsrfToken = async () => {
   try {
-    const response = await Api.get('/sanctum/csrf-cookie');
-    console.log('CSRF cookie set successfully:', response);
+    await Api.get('/sanctum/csrf-cookie');
+    console.log('CSRF cookie set successfully.');
   } catch (error) {
     console.error('Failed to get CSRF token', error);
   }
