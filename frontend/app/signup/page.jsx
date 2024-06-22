@@ -42,6 +42,17 @@ const SignUp = () => {
       localStorage.setItem('token', token);
 
       console.log('登録に成功しました:', user);
+
+      const loginResponse = await Axios.post('/api/login', {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      const { user: loginUser, token: loginToken } = loginResponse.data;
+      localStorage.setItem('user', JSON.stringify(loginUser));
+      localStorage.setItem('token', loginToken);
+
+      console.log('ログインに成功しました:', loginUser);
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
