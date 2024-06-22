@@ -4,20 +4,21 @@ import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Api, GetCsrfToken } from '../_utils/ApiSetup';
+import Axios from '../_utils/axiosSetup';
 
 const fetcher = async (url) => {
-  const response = await Api.get(url);
+  const token = localStorage.getItem('token');
+  const response = await Axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 
 const Header = ({ showUserInfo = 'true' }) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  useEffect(() => {
-    GetCsrfToken();
-  }, []);
 
   const { data: response, error } = useSWR(
     showUserInfo ? '/api/user' : null,
@@ -58,8 +59,19 @@ const Header = ({ showUserInfo = 'true' }) => {
   };
 
   const handleLogout = async () => {
+    const token = localStorage.getItem('token');
     try {
-      await Api.post('/api/logout');
+      await Axios.post(
+        '/api/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
       router.push('/login');
     } catch (error) {
       console.error('Failed to logout', error);
