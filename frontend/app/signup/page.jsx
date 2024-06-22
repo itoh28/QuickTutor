@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from '../_components/Header';
 import Button from '../_components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Api, GetCsrfToken } from '../_utils/ApiSetup';
+import Axios from '../_utils/axiosSetup';
 
 const SignUp = () => {
   const router = useRouter();
@@ -15,10 +15,6 @@ const SignUp = () => {
     password: '',
     passwordConfirm: '',
   });
-
-  useEffect(() => {
-    GetCsrfToken();
-  }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -34,29 +30,21 @@ const SignUp = () => {
     }
 
     try {
-      await GetCsrfToken();
-      const response = await Api.post('/api/register', {
+      const response = await Axios.post('/api/register', {
         group_name: formData.group_name,
         username: formData.username,
         password: formData.password,
         password_confirmation: formData.passwordConfirm,
       });
 
-      const user = response.data.user;
+      const { user, token } = response.data;
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', token);
 
-      const loginResponse = await Api.post('/api/login', {
-        username: formData.username,
-        password: formData.password,
-      });
-
-      console.log('Logged in successfully:', loginResponse.data.user);
+      console.log('登録に成功しました:', user);
       router.push('/view-manuals');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
-      if (error.response && error.response.status === 419) {
-        console.error('CSRF token mismatch or expired');
-      }
     }
   };
 

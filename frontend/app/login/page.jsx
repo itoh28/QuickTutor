@@ -5,7 +5,7 @@ import Header from '../_components/Header';
 import Button from '../_components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Api, GetCsrfToken } from '../_utils/ApiSetup';
+import Axios from '../_utils/axiosSetup';
 
 const Login = () => {
   const router = useRouter();
@@ -13,10 +13,6 @@ const Login = () => {
     username: '',
     password: '',
   });
-
-  useEffect(() => {
-    GetCsrfToken();
-  }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -27,19 +23,19 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await Api.post('/api/login', {
+      const response = await Axios.post('/api/login', {
         username: formData.username,
         password: formData.password,
       });
 
-      const user = response.data.user;
+      const { user, token } = response.data;
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', token);
+
+      console.log('Logged in successfully:', user);
       router.push('/view-manuals');
     } catch (error) {
       console.error('ログインできませんでした', error);
-      if (error.response && error.response.status === 419) {
-        console.error('CSRF token mismatch or expired');
-      }
     }
   };
 
