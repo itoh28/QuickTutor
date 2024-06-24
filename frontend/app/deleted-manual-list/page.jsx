@@ -138,6 +138,7 @@ const DeletedManualList = () => {
               <table className="table-fixed min-w-full border font-semibold border-gray-300">
                 <thead className="sticky top-0 bg-main text-white">
                   <tr>
+                    <th className="px-4 py-4 w-1/6">トップ画像</th>
                     <th className="px-4 py-4 w-1/3">タイトル</th>
                     <th className="w-1/3">ジャンル</th>
                     <th className="w-1/12">作成者</th>
@@ -151,6 +152,15 @@ const DeletedManualList = () => {
                       key={manual.id}
                       className="bg-white border border-gray-300"
                     >
+                      <td className="border border-gray-300 px-4 py-3 w-1/6 whitespace-normal overflow-visible">
+                        {manual.media && manual.media.stepImageUrl && (
+                          <img
+                            src={manual.media.stepImageUrl}
+                            alt="Top Image"
+                            className="w-auto h-auto"
+                          />
+                        )}
+                      </td>
                       <td className="border border-gray-300 px-4 py-3 w-1/3 whitespace-normal overflow-visible">
                         {manual.manualTitle}
                       </td>

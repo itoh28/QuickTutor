@@ -10,7 +10,7 @@ import Axios from '../_utils/axiosSetup';
 const SignUp = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    group_name: '',
+    group_name: '開発用',
     username: '',
     password: '',
     passwordConfirm: '',
