@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../_components/Header';
 import ViewModeSidebar from '../_components/ViewModeSidebar';
 
-const ViewManuals = () => {
+const ViewManualList = () => {
   return (
     <div className="flex flex-col w-screen h-screen bg-baseColor">
       <Header />
@@ -13,4 +13,4 @@ const ViewManuals = () => {
   );
 };
 
-export default ViewManuals;
+export default ViewManualList;

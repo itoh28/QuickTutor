@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EducationalProgramController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\MediaController;
 
@@ -26,4 +28,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/drafts', [ManualController::class, 'drafts']);
 
     Route::post('/media/upload', [MediaController::class, 'upload']);
+
+    Route::get('/genres', [GenreController::class, 'index']);
+    Route::delete('/genres/{id}', [GenreController::class, 'destroy']);
+
+    Route::get('/programs', [EducationalProgramController::class, 'index']);
+    Route::post('/programs', [EducationalProgramController::class, 'store']);
+    Route::get('/programs/{id}', [EducationalProgramController::class, 'show']);
+    Route::put('/programs/{id}', [EducationalProgramController::class, 'update']);
+    Route::delete('/programs/{id}', [EducationalProgramController::class, 'destroy']);
 });

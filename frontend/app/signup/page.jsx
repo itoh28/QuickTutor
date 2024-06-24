@@ -53,7 +53,7 @@ const SignUp = () => {
       localStorage.setItem('token', loginToken);
 
       console.log('ログインに成功しました:', loginUser);
-      router.push('/view-manuals');
+      router.push('/view-manual-list');
     } catch (error) {
       console.error('アカウントを登録できませんでした', error);
     }

@@ -113,7 +113,7 @@ const CreateManual = () => {
         },
       });
 
-      router.push('/edit-manuals');
+      router.push('/edit-manual-list');
     } catch (error) {
       if (error.response && error.response.status === 422) {
         console.error('Validation Error:', error.response.data.errors);
@@ -124,7 +124,7 @@ const CreateManual = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-baseColor flex flex-col items-center overflow-hidden">
+    <div className="w-full h-screen bg-baseColor flex flex-col items-center overflow-y-auto">
       <Header />
       <div className="w-4/5 rounded-t bg-main text-2xl font-bold mt-12">
         <div className="flex">

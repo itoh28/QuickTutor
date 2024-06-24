@@ -13,7 +13,10 @@ class ManualController extends Controller
 {
     public function index()
     {
-        $manuals = Manual::with(['media', 'genres', 'users'])->paginate(50);
+        $manuals = Manual::with(['media', 'genres', 'users'])
+            ->where('is_draft', false)
+            ->paginate(50);
+
         return ManualResource::collection($manuals)->additional([
             'meta' => [
                 'total' => $manuals->total(),
@@ -100,22 +103,53 @@ class ManualController extends Controller
 
     public function trashed()
     {
-        $trashedManuals = Manual::with(['media', 'genres', 'users'])->onlyTrashed()->get();
-        return ManualResource::collection($trashedManuals);
+        try {
+            $trashedManuals = Manual::onlyTrashed()->with(['media', 'genres', 'users'])->paginate(50);
+            return ManualResource::collection($trashedManuals)->additional([
+                'meta' => [
+                    'total' => $trashedManuals->total(),
+                    'current_page' => $trashedManuals->currentPage(),
+                    'last_page' => $trashedManuals->lastPage(),
+                    'per_page' => $trashedManuals->perPage(),
+                    'from' => $trashedManuals->firstItem(),
+                    'to' => $trashedManuals->lastItem(),
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Exception in ManualController@trashed: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while fetching trashed manuals'], 500);
+        }
     }
 
     public function restore($id)
     {
-        $manual = Manual::with(['users', 'steps', 'media', 'genres'])->onlyTrashed()->findOrFail($id);
-        $manual->restore();
-        return new ManualResource($manual);
+        try {
+            $manual = Manual::onlyTrashed()->with(['users', 'steps', 'media', 'genres'])->findOrFail($id);
+            $manual->restore();
+            return new ManualResource($manual);
+        } catch (\Exception $e) {
+            Log::error('Exception in ManualController@restore: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while restoring the manual'], 500);
+        }
     }
 
     public function drafts()
     {
         try {
-            $drafts = Manual::with(['media', 'genres', 'users'])->where('is_draft', true)->get();
-            return ManualResource::collection($drafts);
+            $drafts = Manual::with(['media', 'genres', 'users'])
+                ->where('is_draft', true)
+                ->paginate(50);
+
+            return ManualResource::collection($drafts)->additional([
+                'meta' => [
+                    'total' => $drafts->total(),
+                    'current_page' => $drafts->currentPage(),
+                    'last_page' => $drafts->lastPage(),
+                    'per_page' => $drafts->perPage(),
+                    'from' => $drafts->firstItem(),
+                    'to' => $drafts->lastItem(),
+                ]
+            ]);
         } catch (\Exception $e) {
             Log::error('Exception in ManualController@drafts: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while fetching drafts'], 500);
