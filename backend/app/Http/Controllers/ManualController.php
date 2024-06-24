@@ -155,4 +155,20 @@ class ManualController extends Controller
             return response()->json(['error' => 'An error occurred while fetching drafts'], 500);
         }
     }
+
+    public function getManualsByGenre($id)
+    {
+        $genre = Genre::findOrFail($id);
+        $manuals = $genre->manuals()->with(['media', 'genres', 'users'])->paginate(50);
+        return ManualResource::collection($manuals)->additional([
+            'meta' => [
+                'total' => $manuals->total(),
+                'current_page' => $manuals->currentPage(),
+                'last_page' => $manuals->lastPage(),
+                'per_page' => $manuals->perPage(),
+                'from' => $manuals->firstItem(),
+                'to' => $manuals->lastItem(),
+            ]
+        ]);
+    }
 }

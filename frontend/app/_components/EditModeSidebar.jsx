@@ -5,7 +5,6 @@ import { SwitchIcon } from './_icons/SwitchIcon';
 import Link from 'next/link';
 import { ListIcon } from './_icons/ListIcon';
 import { TagIcon } from './_icons/TagIcon';
-import { TextBookIcon } from './_icons/TextBookIcon';
 import { TrashCanIcon } from './_icons/TrashCanIcon';
 import { DraftIcon } from './_icons/DraftIcon';
 import { usePathname, useRouter } from 'next/navigation';
@@ -17,20 +16,18 @@ const EditModeSidebar = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    switch (pathname) {
-      case '/edit-manual-list':
+    switch (true) {
+      case pathname.startsWith('/edit-manual-list'):
         setActiveIndex(0);
         break;
-      case '/edit-genre-list':
+      case pathname.startsWith('/edit-genre-list') ||
+        pathname.startsWith('/genre/'):
         setActiveIndex(1);
         break;
-      case '/edit-educational-program-list':
-        setActiveIndex(2);
-        break;
-      case '/draft-list':
+      case pathname.startsWith('/draft-list'):
         setActiveIndex(3);
         break;
-      case '/deleted-manual-list':
+      case pathname.startsWith('/deleted-manual-list'):
         setActiveIndex(4);
         break;
       default:
@@ -100,19 +97,6 @@ const EditModeSidebar = () => {
         >
           <TagIcon />
           <span className="ml-1">ジャンル</span>
-        </div>
-
-        <div
-          className={`w-full flex-grow flex items-center justify-center py-3 ${getButtonClass(
-            2,
-            false,
-          )}`}
-          onClick={() => handleButtonClick(2, '/edit-educational-program-list')}
-          onMouseEnter={() => handleMouseEnter(2)}
-          onMouseLeave={handleMouseLeave}
-        >
-          <TextBookIcon />
-          <span className="ml-1">教育プログラム</span>
         </div>
 
         <div

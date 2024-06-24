@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../_components/Header';
 import EditModeSidebar from '../_components/EditModeSidebar';
+import { useRouter } from 'next/navigation';
 import Axios from '../_utils/axiosSetup';
 
 const EditGenreList = () => {
   const [genres, setGenres] = useState([]);
+  const router = useRouter();
 
   const fetchGenres = async () => {
     const token = localStorage.getItem('token');
@@ -50,6 +52,10 @@ const EditGenreList = () => {
     fetchGenres();
   }, []);
 
+  const handleGenreClick = (id) => {
+    router.push(`/genre/${id}`);
+  };
+
   return (
     <div className="flex flex-col w-screen h-screen bg-baseColor">
       <Header />
@@ -61,12 +67,16 @@ const EditGenreList = () => {
           {genres.map((genre) => (
             <div
               key={genre.id}
-              className="relative font-bold bg-blue-200 flex items-center justify-center text-center h-40 w-40"
+              className="relative font-bold bg-blue-200 flex items-center justify-center text-center h-40 w-40 cursor-pointer"
+              onClick={() => handleGenreClick(genre.id)}
             >
               <span>{genre.genre_name}</span>
               <button
                 className="absolute top-0 right-0 w-7 h-7 rounded-full bg-main text-white flex items-center justify-center transform translate-x-1/3 -translate-y-1/3"
-                onClick={() => handleDeleteGenre(genre.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteGenre(genre.id);
+                }}
               >
                 ×
               </button>
