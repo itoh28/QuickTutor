@@ -3,7 +3,6 @@ import { SwitchIcon } from './_icons/SwitchIcon';
 import Link from 'next/link';
 import { ListIcon } from './_icons/ListIcon';
 import { TagIcon } from './_icons/TagIcon';
-import { TextBookIcon } from './_icons/TextBookIcon';
 
 const ViewModeSidebar = () => {
   return (
@@ -22,10 +21,6 @@ const ViewModeSidebar = () => {
         <div className="w-full flex-grow flex justify-center items-center hover:bg-baseColor hover:text-main  hover:font-bold py-3">
           <TagIcon />
           <button className="ml-1">ジャンル</button>
-        </div>
-        <div className="w-full flex-grow flex justify-center items-center hover:bg-baseColor hover:text-main  hover:font-bold py-3">
-          <TextBookIcon />
-          <button className="ml-1">教育プログラム</button>
         </div>
       </div>
     </div>
