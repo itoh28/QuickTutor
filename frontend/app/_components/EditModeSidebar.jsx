@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SwitchIcon } from './_icons/SwitchIcon';
 import Link from 'next/link';
 import { ListIcon } from './_icons/ListIcon';
@@ -8,14 +8,41 @@ import { TagIcon } from './_icons/TagIcon';
 import { TextBookIcon } from './_icons/TextBookIcon';
 import { TrashCanIcon } from './_icons/TrashCanIcon';
 import { DraftIcon } from './_icons/DraftIcon';
+import { usePathname, useRouter } from 'next/navigation';
 
 const EditModeSidebar = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const handleButtonClick = (index) => {
+  useEffect(() => {
+    switch (pathname) {
+      case '/edit-manual-list':
+        setActiveIndex(0);
+        break;
+      case '/edit-genre-list':
+        setActiveIndex(1);
+        break;
+      case '/edit-educational-program-list':
+        setActiveIndex(2);
+        break;
+      case '/draft-list':
+        setActiveIndex(3);
+        break;
+      case '/deleted-manual-list':
+        setActiveIndex(4);
+        break;
+      default:
+        setActiveIndex(0);
+        break;
+    }
+  }, [pathname]);
+
+  const handleButtonClick = (index, path) => {
     setActiveIndex(index);
     setHoverIndex(null);
+    router.push(path);
   };
 
   const handleMouseEnter = (index) => {
@@ -27,9 +54,9 @@ const EditModeSidebar = () => {
   };
 
   const getButtonClass = (index, isTrash) => {
-    if (hoverIndex === index) {
+    if (index === activeIndex) {
       return 'bg-baseColor text-main font-bold';
-    } else if (activeIndex === index) {
+    } else if (hoverIndex === index) {
       return 'bg-baseColor text-main font-bold';
     } else if (isTrash) {
       return 'bg-gray-400 hover:bg-baseColor hover:text-main hover:font-bold';
@@ -40,73 +67,78 @@ const EditModeSidebar = () => {
 
   return (
     <div className="flex flex-col text-lg text-white h-full">
-      <Link href="/view-manuals">
+      <Link href="/view-manual-list">
         <div className="w-full flex justify-center text-black bg-accent2 hover:bg-baseColor hover:text-main py-4">
-          <button className="mr-2 font-semibold">閲覧モードへ</button>
-          <SwitchIcon />
+          <button className="mr-2 font-semibold flex items-center">
+            閲覧モードへ <SwitchIcon className="ml-2" />
+          </button>
         </div>
       </Link>
 
-      <div className="flex-1 flex flex-col bg-main">
+      <div className="flex-1 flex flex-col justify-between bg-main">
         <div
-          className={`w-full flex-grow flex justify-center items-center py-3 ${getButtonClass(
+          className={`w-full flex-grow flex items-center justify-center py-3 ${getButtonClass(
             0,
             false,
           )}`}
-          onClick={() => handleButtonClick(0)}
+          onClick={() => handleButtonClick(0, '/edit-manual-list')}
           onMouseEnter={() => handleMouseEnter(0)}
           onMouseLeave={handleMouseLeave}
         >
           <ListIcon />
-          <button className="ml-1">マニュアル一覧</button>
+          <span className="ml-1">マニュアル一覧</span>
         </div>
+
         <div
-          className={`w-full flex-grow flex justify-center items-center py-3 ${getButtonClass(
+          className={`w-full flex-grow flex items-center justify-center py-3 ${getButtonClass(
             1,
             false,
           )}`}
-          onClick={() => handleButtonClick(1)}
+          onClick={() => handleButtonClick(1, '/edit-genre-list')}
           onMouseEnter={() => handleMouseEnter(1)}
           onMouseLeave={handleMouseLeave}
         >
           <TagIcon />
-          <button className="ml-1">ジャンル</button>
+          <span className="ml-1">ジャンル</span>
         </div>
+
         <div
-          className={`w-full flex-grow flex justify-center items-center py-3 ${getButtonClass(
+          className={`w-full flex-grow flex items-center justify-center py-3 ${getButtonClass(
             2,
             false,
           )}`}
-          onClick={() => handleButtonClick(2)}
+          onClick={() => handleButtonClick(2, '/edit-educational-program-list')}
           onMouseEnter={() => handleMouseEnter(2)}
           onMouseLeave={handleMouseLeave}
         >
           <TextBookIcon />
-          <button className="ml-1">教育プログラム</button>
+          <span className="ml-1">教育プログラム</span>
         </div>
+
         <div
-          className={`w-full flex-grow flex justify-center items-center py-3 ${getButtonClass(
+          className={`w-full flex-grow flex items-center justify-center py-3 ${getButtonClass(
             3,
             false,
           )}`}
-          onClick={() => handleButtonClick(3)}
+          onClick={() => handleButtonClick(3, '/draft-list')}
           onMouseEnter={() => handleMouseEnter(3)}
           onMouseLeave={handleMouseLeave}
         >
           <DraftIcon />
-          <button className="ml-1">下書き一覧</button>
+          <span className="ml-1">下書き一覧</span>
         </div>
+
         <div
           className={`w-full flex justify-center items-center py-6 ${getButtonClass(
             4,
             true,
           )}`}
-          onClick={() => handleButtonClick(4)}
+          onClick={() => handleButtonClick(4, '/deleted-manual-list')}
           onMouseEnter={() => handleMouseEnter(4)}
           onMouseLeave={handleMouseLeave}
         >
           <TrashCanIcon />
-          <button className="ml-1">ごみ箱</button>
+          <span className="ml-1">ごみ箱</span>
         </div>
       </div>
     </div>

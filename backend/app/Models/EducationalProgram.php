@@ -9,6 +9,8 @@ class EducationalProgram extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['program_name', 'progress'];
+
     public function manuals()
     {
         return $this->belongsToMany(Manual::class, 'educational_program_manuals');

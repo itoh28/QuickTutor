@@ -6,8 +6,9 @@ import EditModeSidebar from '../_components/EditModeSidebar';
 import Link from 'next/link';
 import Button from '../_components/Button';
 import Axios from '../_utils/axiosSetup';
+import { TrashCanIcon } from '../_components/_icons/TrashCanIcon';
 
-const EditManuals = () => {
+const DraftList = () => {
   const [manuals, setManuals] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -25,7 +26,7 @@ const EditManuals = () => {
     }
 
     try {
-      const response = await Axios.get('/api/manuals', {
+      const response = await Axios.get('/api/drafts', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,11 +62,30 @@ const EditManuals = () => {
     }
   };
 
+  const handleDeleteDraft = async (id) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    try {
+      await Axios.delete(`/api/manuals/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setManuals(manuals.filter((manual) => manual.id !== id));
+    } catch (error) {
+      console.error('Error deleting draft:', error);
+    }
+  };
+
   return (
     <div className="flex flex-col w-screen h-screen bg-baseColor">
       <Header />
       <div className="flex flex-grow">
-        <div className="w-1/6 min-w-32 bg-main text-white">
+        <div className="w-1/6 min-w-44 bg-main text-white">
           <EditModeSidebar />
         </div>
         <div className="py-6 px-20 flex-grow">
@@ -115,9 +135,10 @@ const EditManuals = () => {
                 <thead className="sticky top-0 bg-main text-white">
                   <tr>
                     <th className="px-4 py-4 w-1/3">タイトル</th>
-                    <th className="w-1/4">ジャンル</th>
+                    <th className="w-1/3">ジャンル</th>
                     <th className="w-1/12">作成者</th>
-                    <th className="w-1/12 min-w-36">最終更新日時</th>
+                    <th className="w-1/6 min-w-36">最終更新日時</th>
+                    <th className="w-1/12">削除</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -129,7 +150,7 @@ const EditManuals = () => {
                       <td className="border border-gray-300 px-4 py-3 w-1/3 whitespace-normal overflow-visible">
                         {manual.manualTitle}
                       </td>
-                      <td className="border border-gray-300 px-4 w-1/4 whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
                         {manual.genres
                           .map((genre) => genre.genreName)
                           .join(', ')}
@@ -137,8 +158,14 @@ const EditManuals = () => {
                       <td className="border border-gray-300 px-4 min-w-28 w-1/12 whitespace-normal overflow-visible">
                         {manual.users.map((user) => user.username).join(', ')}
                       </td>
-                      <td className="border border-gray-300 px-4 w-1/12 min-w-36 whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 w-1/6 min-w-36 whitespace-normal overflow-visible">
                         {manual.updatedAt}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 w-1/12 text-center whitespace-normal overflow-visible">
+                        <TrashCanIcon
+                          onClick={() => handleDeleteDraft(manual.id)}
+                          className="mx-auto"
+                        />
                       </td>
                     </tr>
                   ))}
@@ -152,4 +179,4 @@ const EditManuals = () => {
   );
 };
 
-export default EditManuals;
+export default DraftList;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from '../_components/Header';
 import Button from '../_components/Button';
 import Link from 'next/link';
@@ -33,7 +33,7 @@ const Login = () => {
       localStorage.setItem('token', token);
 
       console.log('Logged in successfully:', user);
-      router.push('/view-manuals');
+      router.push('/view-manual-list');
     } catch (error) {
       console.error('ログインできませんでした', error);
     }
