@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { TrashCanIcon } from './_icons/TrashCanIcon';
 import MediaUpload from './MediaUpload';
+import { EnlargeIcon } from './_icons/EnlargeIcon';
 
-const StepManager = ({ setSteps, initialSteps = [] }) => {
+const StepManager = ({ setSteps, initialSteps = [], onImageClick }) => {
   const [steps, setLocalSteps] = useState(initialSteps);
 
   useEffect(() => {
@@ -77,11 +78,16 @@ const StepManager = ({ setSteps, initialSteps = [] }) => {
       {steps.map((step) => (
         <div key={step.id} className="flex py-6 pr-6 border-b-2">
           <div className="flex items-stretch w-full">
-            <div>
+            <div className="relative">
               <MediaUpload
                 setMedia={(file) => handleMediaChange(step.id, file)}
                 initialMedia={step.media}
               />
+              {step.media && (
+                <div className="absolute bottom-3 right-8">
+                  <EnlargeIcon onClick={() => onImageClick(step.media.url)} />
+                </div>
+              )}
             </div>
             <div className="flex-grow flex flex-col">
               <div className="flex items-center w-full">

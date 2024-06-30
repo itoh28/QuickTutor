@@ -9,6 +9,8 @@ import TagGenerator from '../_components/TagGenerator';
 import StepManager from '../_components/StepManager';
 import { useRouter } from 'next/navigation';
 import Axios from '../_utils/axiosSetup';
+import ImageModal from '../_components/ImageModal';
+import { EnlargeIcon } from '../_components/_icons/EnlargeIcon';
 
 const CreateManual = () => {
   const [title, setTitle] = useState('');
@@ -24,6 +26,8 @@ const CreateManual = () => {
   ]);
   const [tags, setTags] = useState([]);
   const [media, setMedia] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState('');
   const titleInputRef = useRef(null);
   const router = useRouter();
 
@@ -142,13 +146,30 @@ const CreateManual = () => {
     }
   };
 
+  const handleImageClick = (imageSrc) => {
+    setModalImageSrc(imageSrc);
+    setShowImageModal(true);
+  };
+
+  const closeModal = () => {
+    setShowImageModal(false);
+    setModalImageSrc('');
+  };
+
   return (
     <div className="w-full h-screen bg-baseColor flex flex-col items-center overflow-y-auto">
       <Header />
       <div className="w-4/5 rounded-t bg-main text-2xl font-bold mt-12">
-        <div className="flex">
-          <div className="mr-4 py-6">
-            <MediaUpload setMedia={setMedia} />
+        <div className="relative flex">
+          <div className="relative mr-4 py-6">
+            <div className="relative">
+              <MediaUpload setMedia={setMedia} />
+              {media && (
+                <div className="absolute bottom-1 right-8">
+                  <EnlargeIcon onClick={() => handleImageClick(media.url)} />
+                </div>
+              )}
+            </div>
           </div>
           <div className="flex-grow flex flex-col my-2">
             <div className="flex w-full justify-between">
@@ -173,7 +194,11 @@ const CreateManual = () => {
         </div>
       </div>
       <div className="w-4/5 mb-12">
-        <StepManager setSteps={setSteps} initialSteps={steps} />
+        <StepManager
+          setSteps={setSteps}
+          initialSteps={steps}
+          onImageClick={handleImageClick}
+        />
       </div>
       <div className="flex justify-evenly w-full mb-12">
         <Button
@@ -191,6 +216,9 @@ const CreateManual = () => {
           onClick={() => handleSubmit(false)}
         />
       </div>
+      {showImageModal && (
+        <ImageModal imageSrc={modalImageSrc} onClose={closeModal} />
+      )}
     </div>
   );
 };
