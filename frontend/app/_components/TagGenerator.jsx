@@ -2,13 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 
-const TagGenerator = ({ setTags }) => {
+const TagGenerator = ({ setTags, initialTags = [] }) => {
   const [inputValue, setInputValue] = useState('');
   const [tags, setLocalTags] = useState([]);
 
   useEffect(() => {
-    setTags(tags);
-  }, [tags, setTags]);
+    if (initialTags.length > 0) {
+      setLocalTags(initialTags);
+      setTags(initialTags);
+    }
+  }, [initialTags, setTags]);
 
   const addTag = (e) => {
     if (
@@ -19,6 +22,7 @@ const TagGenerator = ({ setTags }) => {
     ) {
       const newTags = [...tags, inputValue.trim()];
       setLocalTags(newTags);
+      setTags(newTags);
       setInputValue('');
       e.preventDefault();
     }
@@ -27,6 +31,7 @@ const TagGenerator = ({ setTags }) => {
   const removeTag = (indexToRemove) => {
     const newTags = tags.filter((_, index) => index !== indexToRemove);
     setLocalTags(newTags);
+    setTags(newTags);
   };
 
   return (

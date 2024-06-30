@@ -12,7 +12,16 @@ import Axios from '../_utils/axiosSetup';
 
 const CreateManual = () => {
   const [title, setTitle] = useState('');
-  const [steps, setSteps] = useState([]);
+  const [steps, setSteps] = useState([
+    {
+      id: 0,
+      subtitle: '',
+      comment: '',
+      media: null,
+      number: 1,
+      focusedOnce: false,
+    },
+  ]);
   const [tags, setTags] = useState([]);
   const [media, setMedia] = useState(null);
   const titleInputRef = useRef(null);
@@ -43,7 +52,7 @@ const CreateManual = () => {
       let mediaId = null;
       if (media) {
         const mediaFormData = new FormData();
-        mediaFormData.append('file', media);
+        mediaFormData.append('file', media.file);
 
         try {
           const mediaResponse = await Axios.post(
@@ -58,6 +67,7 @@ const CreateManual = () => {
           );
           mediaId = mediaResponse.data.data.id;
         } catch (error) {
+          console.error('Error uploading main media:', error);
           throw new Error('Failed to upload media');
         }
       }
@@ -73,9 +83,9 @@ const CreateManual = () => {
       const stepsData = [];
       for (const step of steps) {
         let stepMediaId = null;
-        if (step.media) {
+        if (step.media && step.media.file) {
           const stepMediaFormData = new FormData();
-          stepMediaFormData.append('file', step.media);
+          stepMediaFormData.append('file', step.media.file);
 
           try {
             const stepMediaResponse = await Axios.post(
@@ -90,6 +100,10 @@ const CreateManual = () => {
             );
             stepMediaId = stepMediaResponse.data.data.id;
           } catch (error) {
+            console.error(
+              `Error uploading media for step ${step.number}:`,
+              error,
+            );
             throw new Error(`Failed to upload media for step ${step.number}`);
           }
         }
@@ -106,6 +120,11 @@ const CreateManual = () => {
         formData.append(`steps[${index}][step_comment]`, step.step_comment);
         formData.append(`steps[${index}][media_id]`, step.media_id);
       });
+
+      // 送信データをコンソールに表示
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
 
       await Axios.post('/api/manuals', formData, {
         headers: {
@@ -154,7 +173,7 @@ const CreateManual = () => {
         </div>
       </div>
       <div className="w-4/5 mb-12">
-        <StepManager setSteps={setSteps} />
+        <StepManager setSteps={setSteps} initialSteps={steps} />
       </div>
       <div className="flex justify-evenly w-full mb-12">
         <Button

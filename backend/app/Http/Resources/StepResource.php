@@ -14,8 +14,10 @@ class StepResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id,
+            'media' => new MediaResource($this->whenLoaded('media')),
             'stepSubtitle' => $this->step_subtitle,
             'stepComment' => $this->step_comment,
         ];

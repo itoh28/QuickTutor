@@ -29,13 +29,6 @@ class MediaController extends Controller
         $secretKey = env('AWS_SECRET_ACCESS_KEY');
         $bucket = env('AWS_BUCKET');
 
-        // 環境変数の値をログに出力
-        Log::info('AWS_DEFAULT_REGION: ' . $region);
-        Log::info('AWS_ACCESS_KEY_ID: ' . $accessKey);
-        Log::info('AWS_SECRET_ACCESS_KEY: ' . $secretKey);
-        Log::info('AWS_BUCKET: ' . $bucket);
-
-        // 残りの処理はそのまま
         $s3 = new S3Client([
             'version' => 'latest',
             'region' => $region,
@@ -46,10 +39,11 @@ class MediaController extends Controller
         ]);
 
         try {
-            Log::info('Attempting to upload file to S3: ' . $filePath);
-            Log::info('File path: ' . $file->getPathname());
-            Log::info('File type: ' . $file->getMimeType());
-            Log::info('File size: ' . $file->getSize());
+            Log::info('Attempting to upload file to S3', [
+                'filePath' => $filePath,
+                'fileType' => $file->getMimeType(),
+                'fileSize' => $file->getSize()
+            ]);
 
             $result = $s3->putObject([
                 'Bucket' => $bucket,
@@ -58,14 +52,12 @@ class MediaController extends Controller
                 'ContentType' => $file->getMimeType(),
             ]);
 
-            Log::info('S3 putObject result: ' . json_encode($result));
-
             if (empty($result['ObjectURL'])) {
-                Log::error('File upload failed: ' . $filePath);
+                Log::error('File upload failed', ['filePath' => $filePath]);
                 return response()->json(['error' => 'File upload failed'], 500);
             }
 
-            Log::info('File uploaded successfully: ' . $result['ObjectURL']);
+            Log::info('File uploaded successfully', ['objectURL' => $result['ObjectURL']]);
 
             $mediaUrl = $result['ObjectURL'];
 
@@ -82,19 +74,23 @@ class MediaController extends Controller
                 return response()->json(['error' => 'Failed to save media record'], 500);
             }
 
-            Log::info('Media record saved successfully.', ['media' => $media]);
+            Log::info('Media record saved successfully', ['mediaId' => $media->id]);
             return response()->json(['data' => new MediaResource($media)], 201);
         } catch (S3Exception $e) {
-            Log::error('S3Exception occurred while uploading file to S3: ' . $e->getAwsErrorMessage(), ['exception' => $e]);
-            Log::error('AWS Error Code: ' . $e->getAwsErrorCode());
-            Log::error('HTTP Status Code: ' . $e->getStatusCode());
-            Log::error('Error Type: ' . $e->getAwsErrorType());
-            Log::error('Request ID: ' . $e->getAwsRequestId());
-            Log::error($e->getTraceAsString());
+            Log::error('S3Exception occurred while uploading file to S3', [
+                'awsErrorMessage' => $e->getAwsErrorMessage(),
+                'awsErrorCode' => $e->getAwsErrorCode(),
+                'httpStatusCode' => $e->getStatusCode(),
+                'errorType' => $e->getAwsErrorType(),
+                'requestId' => $e->getAwsRequestId(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return response()->json(['error' => 'File upload failed with S3 exception'], 500);
         } catch (Exception $e) {
-            Log::error('Exception occurred while uploading file to S3: ' . $e->getMessage(), ['exception' => $e]);
-            Log::error($e->getTraceAsString());
+            Log::error('Exception occurred while uploading file to S3', [
+                'errorMessage' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return response()->json(['error' => 'File upload failed with exception'], 500);
         }
     }

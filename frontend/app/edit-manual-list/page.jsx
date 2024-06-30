@@ -18,7 +18,7 @@ const EditManualList = () => {
     to: 0,
   });
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1) => {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found');
@@ -26,17 +26,13 @@ const EditManualList = () => {
     }
 
     try {
-      const response = await Axios.get('/api/manuals', {
+      const response = await Axios.get(`/api/manuals?page=${page}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const { data, meta } = response.data;
-
-      // コンソールログを追加してレスポンスデータを確認
-      console.log('API Response Data:', data);
-      console.log('API Response Meta:', meta);
-
+      console.log(data);
       setManuals(data);
       setPagination({
         currentPage: meta.current_page[0],
@@ -66,23 +62,33 @@ const EditManualList = () => {
     }
   };
 
-  const handleDeleteDraft = async (id) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
+  const handleDeleteManual = async (id) => {
+    if (
+      confirm(
+        '本当にマニュアルを削除しますか？削除したマニュアルはごみ箱から復元できます。',
+      )
+    ) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
 
-    try {
-      await Axios.delete(`/api/manuals/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setManuals(manuals.filter((manual) => manual.id !== id));
-    } catch (error) {
-      console.error('Error deleting draft:', error);
+      try {
+        await Axios.delete(`/api/manuals/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setManuals(manuals.filter((manual) => manual.id !== id));
+      } catch (error) {
+        console.error('Error deleting draft:', error);
+      }
     }
+  };
+
+  const handleEditClick = () => {
+    localStorage.setItem('prevPage', '/edit-manual-list');
   };
 
   return (
@@ -138,12 +144,13 @@ const EditManualList = () => {
               <table className="table-fixed min-w-full border font-semibold border-gray-300">
                 <thead className="sticky top-0 bg-main text-white">
                   <tr>
-                    <th className="px-4 py-4 w-1/6">トップ画像</th>
-                    <th className="px-4 py-4 w-1/3">タイトル</th>
+                    <th className="w-1/6 min-w-20">トップ画像</th>
+                    <th className="w-1/3">タイトル</th>
                     <th className="w-1/3">ジャンル</th>
                     <th className="w-1/12">作成者</th>
                     <th className="w-1/6 min-w-36">最終更新日時</th>
                     <th className="w-1/12">削除</th>
+                    <th className="py-4 w-1/12">編集</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -161,7 +168,7 @@ const EditManualList = () => {
                           />
                         )}
                       </td>
-                      <td className="border border-gray-300 px-4 py-3 w-1/3 whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
                         {manual.manualTitle}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
@@ -175,11 +182,23 @@ const EditManualList = () => {
                       <td className="border border-gray-300 px-4 w-1/6 min-w-36 whitespace-normal overflow-visible">
                         {manual.updatedAt}
                       </td>
-                      <td className="border border-gray-300 px-4 py-3 w-1/12 text-center whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 w-1/12 text-center whitespace-normal overflow-visible">
                         <TrashCanIcon
-                          onClick={() => handleDeleteDraft(manual.id)}
+                          onClick={() => handleDeleteManual(manual.id)}
                           className="mx-auto"
                         />
+                      </td>
+                      <td className="border border-gray-300 px-4 w-1/12 min-w-24 text-center whitespace-normal overflow-visible">
+                        <Link href={`/edit-manual/${manual.id}`}>
+                          <Button
+                            text="編集"
+                            type="button"
+                            fontSize="text-sm"
+                            py="py-2"
+                            px="px-3"
+                            onClick={handleEditClick}
+                          />
+                        </Link>
                       </td>
                     </tr>
                   ))}

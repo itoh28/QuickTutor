@@ -1,11 +1,18 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-const MediaUpload = ({ setMedia }) => {
-  const [mediaPreview, setMediaPreview] = useState(null);
-  const [mediaType, setMediaType] = useState(null);
+const MediaUpload = ({ setMedia, initialMedia = null }) => {
+  const [mediaPreview, setMediaPreview] = useState(initialMedia?.url || null);
+  const [mediaType, setMediaType] = useState(initialMedia?.type || null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (initialMedia) {
+      setMediaPreview(initialMedia.url);
+      setMediaType(initialMedia.type);
+    }
+  }, [initialMedia]);
 
   const handleMediaChange = (e) => {
     const file = e.target.files[0];
@@ -20,7 +27,11 @@ const MediaUpload = ({ setMedia }) => {
       ) {
         setMediaPreview(URL.createObjectURL(file));
         setMediaType(validImageTypes.includes(filetype) ? 'image' : 'video');
-        setMedia(file);
+        setMedia({
+          url: URL.createObjectURL(file),
+          type: validImageTypes.includes(filetype) ? 'image' : 'video',
+          file,
+        });
       } else {
         alert(
           '対応していないファイル形式です。画像または動画をアップロードしてください。',

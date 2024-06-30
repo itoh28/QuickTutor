@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TrashCanIcon } from './_icons/TrashCanIcon';
 import MediaUpload from './MediaUpload';
 
-const StepManager = ({ setSteps }) => {
-  const [steps, setLocalSteps] = useState([
-    { id: 0, subtitle: '', comment: '', number: 1, focusedOnce: false },
-  ]);
+const StepManager = ({ setSteps, initialSteps = [] }) => {
+  const [steps, setLocalSteps] = useState(initialSteps);
+
+  useEffect(() => {
+    setLocalSteps(initialSteps);
+  }, [initialSteps]);
 
   useEffect(() => {
     setSteps(steps);
@@ -34,24 +36,22 @@ const StepManager = ({ setSteps }) => {
       const updatedSteps = filteredSteps.map((step, index) => ({
         ...step,
         number: index + 1,
+        subtitle: step.subtitle.replace(/^\d+\.\s*/, `${index + 1}. `),
       }));
       return updatedSteps;
     });
   };
 
-  const handleMediaChange = (id, file) => {
+  const handleMediaChange = (id, media) => {
     setLocalSteps((prevSteps) =>
-      prevSteps.map((step) =>
-        step.id === id ? { ...step, media: file } : step,
-      ),
+      prevSteps.map((step) => (step.id === id ? { ...step, media } : step)),
     );
   };
 
   const handleSubtitleChange = (id, value) => {
-    const newText = value.replace(/^\d+\.\s*/, '');
     setLocalSteps((prevSteps) =>
       prevSteps.map((step) =>
-        step.id === id ? { ...step, subtitle: newText } : step,
+        step.id === id ? { ...step, subtitle: value } : step,
       ),
     );
   };
@@ -80,6 +80,7 @@ const StepManager = ({ setSteps }) => {
             <div>
               <MediaUpload
                 setMedia={(file) => handleMediaChange(step.id, file)}
+                initialMedia={step.media}
               />
             </div>
             <div className="flex-grow flex flex-col">
@@ -87,11 +88,7 @@ const StepManager = ({ setSteps }) => {
                 <div className="relative flex-grow">
                   <input
                     type="text"
-                    value={
-                      step.focusedOnce
-                        ? `${step.number}. ${step.subtitle}`
-                        : step.subtitle
-                    }
+                    value={step.subtitle}
                     onFocus={() => handleFocus(step.id)}
                     onChange={(e) =>
                       handleSubtitleChange(step.id, e.target.value)
