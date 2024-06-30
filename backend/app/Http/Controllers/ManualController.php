@@ -8,6 +8,7 @@ use App\Http\Requests\ManualRequest;
 use App\Http\Resources\ManualResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class ManualController extends Controller
 {
@@ -71,27 +72,51 @@ class ManualController extends Controller
 
     public function show($id)
     {
-        $manual = Manual::with(['users', 'steps', 'media', 'genres'])->findOrFail($id);
+        $manual = Manual::with(['users', 'steps.media', 'media', 'genres'])->findOrFail($id);
+        Log::info('Manual Response:', $manual->toArray());
         return new ManualResource($manual);
     }
 
     public function update(ManualRequest $request, $id)
     {
-        $manual = Manual::findOrFail($id);
-        $manual->update($request->only(['media_id', 'manual_title', 'is_draft']));
-        $manual->genres()->sync($request->genres);
-        foreach ($request->steps as $step) {
-            $manual->steps()->updateOrCreate(['id' => $step['id'] ?? null], $step);
+        try {
+            Log::info('Update Request Data:', $request->all());
+
+            $manual = Manual::findOrFail($id);
+
+            $manual->update($request->only(['media_id', 'manual_title', 'is_draft']));
+
+            $genreIds = [];
+            foreach ($request->input('genres', []) as $genre) {
+                $genreModel = Genre::firstOrCreate(['genre_name' => $genre]);
+                $genreIds[] = $genreModel->id;
+            }
+            $manual->genres()->sync($genreIds);
+
+            $manual->steps()->delete();
+            foreach ($request->input('steps', []) as $step) {
+                $manual->steps()->create([
+                    'step_subtitle' => $step['step_subtitle'],
+                    'step_comment' => $step['step_comment'],
+                    'media_id' => $step['media_id'] ?? null,
+                ]);
+            }
+
+            $user = Auth::user();
+            if ($user) {
+                $manual->users()->syncWithoutDetaching([$user->id]);
+            }
+
+            $manual->load('media', 'genres', 'steps', 'users');
+
+            return new ManualResource($manual);
+        } catch (ValidationException $e) {
+            Log::error('Validation Errors:', $e->errors());
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            Log::error('Exception in ManualController@update: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
-
-        $user = Auth::user();
-        if ($user) {
-            $manual->users()->attach([$user->id]);
-        }
-
-        $manual->load('media', 'genres', 'steps', 'users');
-
-        return new ManualResource($manual);
     }
 
     public function destroy($id)

@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class ManualRequest extends FormRequest
 {
@@ -29,9 +32,11 @@ class ManualRequest extends FormRequest
             'steps' => 'required|array|max:50',
             'steps.*.step_subtitle' => 'required|string|max:25',
             'steps.*.step_comment' => 'required|string|max:200',
+            'steps.*.media_id' => 'nullable|exists:media,id',
             'is_draft' => 'boolean',
         ];
     }
+
     /**
      * Get custom error messages for validator errors.
      *
@@ -55,7 +60,20 @@ class ManualRequest extends FormRequest
             'steps.*.step_subtitle.max' => 'ステップサブタイトルは最大25文字までです。',
             'steps.*.step_comment.required' => 'ステップコメントが必要です。',
             'steps.*.step_comment.max' => 'ステップコメントは最大200文字までです。',
+            'steps.*.media_id.exists' => '指定されたステップのメディアIDは存在しません。',
             'is_draft.boolean' => 'ドラフトフラグは真偽値である必要があります。',
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param Validator $validator
+     * @throws ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        Log::error('Validation Failed:', $validator->errors()->toArray());
+        throw new ValidationException($validator);
     }
 }

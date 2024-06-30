@@ -138,12 +138,12 @@ const DeletedManualList = () => {
               <table className="table-fixed min-w-full border font-semibold border-gray-300">
                 <thead className="sticky top-0 bg-main text-white">
                   <tr>
-                    <th className="px-4 py-4 w-1/6">トップ画像</th>
-                    <th className="px-4 py-4 w-1/3">タイトル</th>
+                    <th className="w-1/6">トップ画像</th>
+                    <th className="w-1/3">タイトル</th>
                     <th className="w-1/3">ジャンル</th>
                     <th className="w-1/12">作成者</th>
                     <th className="w-1/6 min-w-36">最終更新日時</th>
-                    <th className="w-1/12">復元</th>
+                    <th className="py-4 w-1/12">復元</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -161,7 +161,7 @@ const DeletedManualList = () => {
                           />
                         )}
                       </td>
-                      <td className="border border-gray-300 px-4 py-3 w-1/3 whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
                         {manual.manualTitle}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
@@ -175,7 +175,7 @@ const DeletedManualList = () => {
                       <td className="border border-gray-300 px-4 w-1/6 min-w-36 whitespace-normal overflow-visible">
                         {manual.updatedAt}
                       </td>
-                      <td className="border border-gray-300 px-4 py-3 w-1/12 text-center whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 w-1/12 text-center whitespace-normal overflow-visible">
                         <RestoreIcon
                           onClick={() => handleRestoreManual(manual.id)}
                           className="mx-auto"
