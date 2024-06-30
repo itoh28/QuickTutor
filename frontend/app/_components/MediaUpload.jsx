@@ -56,7 +56,7 @@ const MediaUpload = ({ setMedia, initialMedia = null }) => {
           <img
             src={mediaPreview}
             alt="Uploaded"
-            className="absolute top-0 left-0 w-full h-full object-contain"
+            className="w-full h-full object-contain"
           />
         )}
         {mediaPreview && mediaType === 'video' && (
@@ -64,7 +64,7 @@ const MediaUpload = ({ setMedia, initialMedia = null }) => {
             src={mediaPreview}
             controls
             onClick={handleVideoClick}
-            className="absolute top-0 left-0 w-full h-full object-contain"
+            className="w-full h-full object-contain"
           ></video>
         )}
         <input

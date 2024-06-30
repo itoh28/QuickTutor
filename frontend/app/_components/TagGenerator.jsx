@@ -41,9 +41,9 @@ const TagGenerator = ({ setTags, initialTags = [] }) => {
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={addTag}
-        placeholder="ジャンルを入力(5個まで設定可)"
+        placeholder="ジャンルを入力してenter(5個まで設定可)"
         maxLength={15}
-        className="w-56 p-2 text-black text-sm rounded focus:outline-none"
+        className="w-72 p-2 text-black text-sm rounded focus:outline-none"
       />
       <div className="flex flex-wrap gap-2 mt-2">
         {tags.map((tag, index) => (
