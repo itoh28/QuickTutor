@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 const EscButton = () => {
   const router = useRouter();
@@ -14,7 +14,7 @@ const EscButton = () => {
     <div className="flex justify-end mx-4">
       <div onClick={handleBack} className="flex flex-col items-center">
         <button className="rounded-full bg-white px-2">
-          <span className="text-main text-3xl">×</span>
+          <span className="text-main text-3xl">&times;</span>
         </button>
         <button>
           <p className="text-xs text-white">esc</p>

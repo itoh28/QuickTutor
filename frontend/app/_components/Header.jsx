@@ -78,6 +78,10 @@ const Header = ({ showUserInfo = 'true' }) => {
     }
   };
 
+  const handleUsernameChange = () => {
+    router.push('/change-username');
+  };
+
   return (
     <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
       <div className="text-2xl font-bold ml-2">
@@ -98,7 +102,10 @@ const Header = ({ showUserInfo = 'true' }) => {
                 >
                   ログアウト
                 </button>
-                <button className="w-full px-4 py-2 text-center bg-white hover:bg-gray-200 border-b border-main">
+                <button
+                  onClick={handleUsernameChange}
+                  className="w-full px-4 py-2 text-center bg-white hover:bg-gray-200 border-b border-main"
+                >
                   ユーザー名変更
                 </button>
                 <button className="w-full px-4 py-2 text-center hover:bg-gray-200">

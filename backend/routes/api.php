@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\UserController;
 
 Route::get('/health', function () {
     return response()->json(['status' => 'OK'], 200);
@@ -16,6 +17,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::put('/user/username', [UserController::class, 'updateUsername']);
 
     Route::get('/manuals', [ManualController::class, 'index']);
     Route::post('/manuals', [ManualController::class, 'store']);
