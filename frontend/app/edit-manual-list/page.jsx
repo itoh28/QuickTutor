@@ -81,6 +81,7 @@ const EditManualList = () => {
           },
         });
         setManuals(manuals.filter((manual) => manual.id !== id));
+        fetchData(pagination.currentPage); // 再度データをフェッチしてジャンルの表示を更新
       } catch (error) {
         console.error('Error deleting draft:', error);
       }

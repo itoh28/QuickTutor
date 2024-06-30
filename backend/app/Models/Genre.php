@@ -11,6 +11,7 @@ class Genre extends Model
 
     protected $fillable = [
         'genre_name',
+        'group_id',
     ];
 
     public function manuals()

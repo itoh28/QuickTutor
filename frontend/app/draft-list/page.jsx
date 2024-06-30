@@ -18,7 +18,7 @@ const DraftList = () => {
     to: 0,
   });
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1) => {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found');
@@ -170,6 +170,11 @@ const DraftList = () => {
                       </td>
                       <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
                         {manual.manualTitle}
+                        {manual.isDraft === 1 && (
+                          <span className="ml-2 inline-block rounded-full bg-gray-400 text-white px-2 py-1 text-xs">
+                            下書き
+                          </span>
+                        )}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
                         {manual.genres
