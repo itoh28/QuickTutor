@@ -8,7 +8,6 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 
@@ -18,6 +17,15 @@ class AuthController extends Controller
     {
         try {
             $group = Group::where('group_name', $request->group_name)->firstOrFail();
+
+            $existingUser = User::where('username', $request->username)
+                ->where('group_id', $group->id)
+                ->first();
+
+            if ($existingUser) {
+                return response()->json(['message' => 'Username already exists in this group'], 400);
+            }
+
             $user = User::create([
                 'group_id' => $group->id,
                 'username' => $request->username,
@@ -34,14 +42,22 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        if (Auth::attempt($request->only(['username', 'password']))) {
-            $user = User::where('username', $request->username)->first();
-            $user->tokens()->delete();
-            $token = $user->createToken('API Token')->plainTextToken;
-            return response()->json(['user' => new UserResource($user), 'token' => $token], 200);
-        }
+        try {
+            $group = Group::where('group_name', $request->group_name)->firstOrFail();
+            $user = User::where('username', $request->username)
+                ->where('group_id', $group->id)
+                ->first();
 
-        return response()->json(['message' => 'Invalid credentials'], 401);
+            if ($user && Hash::check($request->password, $user->password)) {
+                $user->tokens()->delete();
+                $token = $user->createToken('API Token')->plainTextToken;
+                return response()->json(['user' => new UserResource($user), 'token' => $token], 200);
+            }
+
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Login failed', 'error' => $e->getMessage()], 400);
+        }
     }
 
     public function getUser(Request $request)
