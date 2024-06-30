@@ -29,25 +29,6 @@ const EditGenreList = () => {
     }
   };
 
-  const handleDeleteGenre = async (id) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
-
-    try {
-      await Axios.delete(`/api/genres/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setGenres(genres.filter((genre) => genre.id !== id));
-    } catch (error) {
-      console.error('Error deleting genre:', error);
-    }
-  };
-
   useEffect(() => {
     fetchGenres();
   }, []);
@@ -71,15 +52,6 @@ const EditGenreList = () => {
               onClick={() => handleGenreClick(genre.id)}
             >
               <span>{genre.genre_name}</span>
-              <button
-                className="absolute top-0 right-0 w-7 h-7 rounded-full bg-main text-white flex items-center justify-center transform translate-x-1/3 -translate-y-1/3"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteGenre(genre.id);
-                }}
-              >
-                ×
-              </button>
             </div>
           ))}
         </div>

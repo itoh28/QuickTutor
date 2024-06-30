@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -23,8 +24,25 @@ class RegisterRequest extends FormRequest
     {
         return [
             'group_name' => ['required', 'string', 'max:255', 'exists:groups,group_name'],
-            'username' => ['required', 'string', 'max:50', 'unique:users,username'],
+            'username' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('users')->where(function ($query) {
+                    return $query->where('group_id', $this->getGroupId());
+                }),
+            ],
             'password' => ['required', 'string', 'min:8', 'regex:/[a-z]/', 'regex:/[0-9]/'],
         ];
+    }
+
+    /**
+     * Get the group ID based on the group name.
+     *
+     * @return int|null
+     */
+    protected function getGroupId()
+    {
+        return \App\Models\Group::where('group_name', $this->input('group_name'))->value('id');
     }
 }
