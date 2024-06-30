@@ -43,7 +43,9 @@ const SignUp = () => {
 
       console.log('登録に成功しました:', user);
 
+      // 登録後にログインを試みる
       const loginResponse = await Axios.post('/api/login', {
+        group_name: formData.group_name,
         username: formData.username,
         password: formData.password,
       });
