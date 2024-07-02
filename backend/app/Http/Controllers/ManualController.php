@@ -7,7 +7,6 @@ use App\Models\Genre;
 use App\Http\Requests\ManualRequest;
 use App\Http\Resources\ManualResource;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class ManualController extends Controller
@@ -120,7 +119,6 @@ class ManualController extends Controller
             }
             $manual->genres()->sync($genreIds);
 
-            // 不要になったジャンルを削除
             $deletedGenres = Genre::whereDoesntHave('manuals')->get();
             foreach ($deletedGenres as $deletedGenre) {
                 $deletedGenre->delete();

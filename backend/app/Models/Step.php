@@ -13,7 +13,7 @@ class Step extends Model
 
     public function manual()
     {
-        return $this->belongsTo(Manual::class);
+        return $this->belongsToMany(Manual::class, 'step_manuals');
     }
 
     public function media()

@@ -147,8 +147,8 @@ const GenreManualList = ({ params }) => {
                     <th className="w-1/3">ジャンル</th>
                     <th className="w-1/12">作成者</th>
                     <th className="w-1/6 min-w-36">最終更新日時</th>
-                    <th className="w-1/12">削除</th>
-                    <th className="py-4 w-1/12">編集</th>
+                    <th className="w-1/12 min-w-10">削除</th>
+                    <th className="py-4 w-1/12 min-w-10">編集</th>
                   </tr>
                 </thead>
                 <tbody>
