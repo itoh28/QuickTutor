@@ -3,7 +3,12 @@ import { TrashCanIcon } from './_icons/TrashCanIcon';
 import MediaUpload from './MediaUpload';
 import { EnlargeIcon } from './_icons/EnlargeIcon';
 
-const StepManager = ({ setSteps, initialSteps = [], onImageClick }) => {
+const StepManager = ({
+  setSteps,
+  initialSteps = [],
+  onImageClick,
+  errors = [],
+}) => {
   const [steps, setLocalSteps] = useState(initialSteps);
 
   useEffect(() => {
@@ -75,7 +80,7 @@ const StepManager = ({ setSteps, initialSteps = [], onImageClick }) => {
 
   return (
     <div className="w-full bg-gray-50 font-bold border-x-2 border-main">
-      {steps.map((step) => (
+      {steps.map((step, index) => (
         <div key={step.id} className="flex py-6 pr-6 border-b-2">
           <div className="flex items-stretch w-full">
             <div className="relative">
@@ -87,6 +92,11 @@ const StepManager = ({ setSteps, initialSteps = [], onImageClick }) => {
                 <div className="absolute bottom-3 right-8">
                   <EnlargeIcon onClick={() => onImageClick(step.media.url)} />
                 </div>
+              )}
+              {errors[index]?.media_id && (
+                <p className="text-red-500 text-xs italic">
+                  {errors[index].media_id[0]}
+                </p>
               )}
             </div>
             <div className="flex-grow flex flex-col">
@@ -103,6 +113,11 @@ const StepManager = ({ setSteps, initialSteps = [], onImageClick }) => {
                     maxLength={28}
                     className="mt-2 p-2 w-full border border-gray-300 rounded focus:outline-none"
                   />
+                  {errors[index]?.step_subtitle && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors[index].step_subtitle[0]}
+                    </p>
+                  )}
                 </div>
                 {steps.length > 1 && (
                   <button
@@ -120,6 +135,11 @@ const StepManager = ({ setSteps, initialSteps = [], onImageClick }) => {
                 maxLength={200}
                 className="p-2 flex-1 font-normal border border-gray-300 rounded focus:outline-none my-2"
               />
+              {errors[index]?.step_comment && (
+                <p className="text-red-500 text-xs italic">
+                  {errors[index].step_comment[0]}
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -28,6 +28,7 @@ const CreateManual = () => {
   const [media, setMedia] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState('');
+  const [errors, setErrors] = useState({});
   const titleInputRef = useRef(null);
   const router = useRouter();
 
@@ -43,6 +44,8 @@ const CreateManual = () => {
   };
 
   const handleSubmit = async (isDraft) => {
+    setErrors({});
+
     try {
       const formData = new FormData();
       formData.append('manual_title', title);
@@ -74,10 +77,6 @@ const CreateManual = () => {
           console.error('Error uploading main media:', error);
           throw new Error('Failed to upload media');
         }
-      }
-
-      if (!mediaId) {
-        return;
       }
 
       formData.append('media_id', mediaId);
@@ -125,11 +124,6 @@ const CreateManual = () => {
         formData.append(`steps[${index}][media_id]`, step.media_id);
       });
 
-      // 送信データをコンソールに表示
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-      }
-
       await Axios.post('/api/manuals', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -139,7 +133,18 @@ const CreateManual = () => {
       router.push('/edit-manual-list');
     } catch (error) {
       if (error.response && error.response.status === 422) {
-        console.error('Validation Error:', error.response.data.errors);
+        const validationErrors = error.response.data.errors;
+        const stepErrors = [];
+        for (const key in validationErrors) {
+          if (key.startsWith('steps.')) {
+            const [_, index, field] = key.split('.');
+            if (!stepErrors[index]) {
+              stepErrors[index] = {};
+            }
+            stepErrors[index][field] = validationErrors[key];
+          }
+        }
+        setErrors({ ...validationErrors, steps: stepErrors });
       } else {
         console.error('Error creating manual:', error);
       }
@@ -170,11 +175,21 @@ const CreateManual = () => {
                 </div>
               )}
             </div>
+            {errors.media_id && (
+              <p className="text-red-500 text-xs italic">
+                {errors.media_id[0]}
+              </p>
+            )}
           </div>
           <div className="flex-grow flex flex-col my-2">
             <div className="flex w-full justify-between">
               <div className="mt-6">
                 <TagGenerator setTags={setTags} />
+                {errors.genres && (
+                  <p className="text-red-500 text-xs italic">
+                    {errors.genres[0]}
+                  </p>
+                )}
               </div>
               <div className="mt-3">
                 <EscButton />
@@ -187,9 +202,16 @@ const CreateManual = () => {
               onKeyDown={handleKeyPress}
               placeholder="タイトルを入力(最大30文字)"
               maxLength={30}
-              className="my-6 mr-4 p-2 max-w-xl text-lg bg-white rounded focus:outline-none"
+              className={`mt-6 mb-2 mr-4 p-2 max-w-xl text-lg bg-white rounded focus:outline-none ${
+                errors.manual_title ? 'border-red-500' : ''
+              }`}
               ref={titleInputRef}
             />
+            {errors.manual_title && (
+              <p className="text-red-500 text-xs italic">
+                {errors.manual_title[0]}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -198,6 +220,7 @@ const CreateManual = () => {
           setSteps={setSteps}
           initialSteps={steps}
           onImageClick={handleImageClick}
+          errors={errors.steps || []}
         />
       </div>
       <div className="flex justify-evenly w-full mb-12">

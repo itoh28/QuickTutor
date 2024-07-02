@@ -32,7 +32,7 @@ class ManualRequest extends FormRequest
             'steps' => 'required|array|max:50',
             'steps.*.step_subtitle' => 'required|string|max:25',
             'steps.*.step_comment' => 'required|string|max:200',
-            'steps.*.media_id' => 'nullable|exists:media,id',
+            'steps.*.media_id' => 'required|exists:media,id',
             'is_draft' => 'boolean',
         ];
     }
@@ -45,23 +45,19 @@ class ManualRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'media_id.required' => 'メディアIDが必要です。',
-            'media_id.exists' => '指定されたメディアIDは存在しません。',
-            'manual_title.required' => 'マニュアルタイトルが必要です。',
+            'media_id.exists' => 'トップ画像の設定は必須です。',
+            'manual_title.required' => 'マニュアルタイトルの入力は必須です。',
             'manual_title.max' => 'マニュアルタイトルは最大30文字までです。',
-            'genres.required' => 'ジャンルが必要です。',
-            'genres.array' => 'ジャンルは配列である必要があります。',
+            'genres.required' => 'ジャンルの設定は必須です。',
             'genres.max' => 'ジャンルは最大5つまで設定できます。',
             'genres.*.max' => 'ジャンル名は最大15文字までです。',
-            'steps.required' => 'ステップが必要です。',
-            'steps.array' => 'ステップは配列である必要があります。',
+            'steps.required' => '1つ以上のステップが必要です。',
             'steps.max' => 'ステップは最大50個まで設定できます。',
-            'steps.*.step_subtitle.required' => 'ステップサブタイトルが必要です。',
+            'steps.*.media_id.exists' => 'ステップ画像の設定は必須です。',
+            'steps.*.step_subtitle.required' => 'ステップサブタイトルの入力は必須です。',
             'steps.*.step_subtitle.max' => 'ステップサブタイトルは最大25文字までです。',
-            'steps.*.step_comment.required' => 'ステップコメントが必要です。',
+            'steps.*.step_comment.required' => 'ステップコメントの入力は必須です。',
             'steps.*.step_comment.max' => 'ステップコメントは最大200文字までです。',
-            'steps.*.media_id.exists' => '指定されたステップのメディアIDは存在しません。',
-            'is_draft.boolean' => 'ドラフトフラグは真偽値である必要があります。',
         ];
     }
 

@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class UpdateUsernameRequest extends FormRequest
 {
@@ -22,8 +25,35 @@ class UpdateUsernameRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'groupName' => 'required|string',
             'currentUsername' => 'required|string',
-            'newUsername' => 'required|string|unique:users,username',
+            'newUsername' => 'required|string',
         ];
+    }
+
+    /**
+     * Get custom error messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'groupName.required' => 'グループ名は必須です。',
+            'currentUsername.required' => '現在のユーザー名の入力は必須です。',
+            'newUsername.required' => '新しいユーザー名の入力は必須です。',
+        ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param Validator $validator
+     * @throws ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        Log::error('Validation Failed:', $validator->errors()->toArray());
+        throw new ValidationException($validator);
     }
 }
