@@ -8,8 +8,10 @@ import Button from '@/app/_components/Button';
 import Axios from '@/app/_utils/axiosSetup';
 
 const ChangeUsername = () => {
+  const [groupName, setGroupName] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
   const [newUsername, setNewUsername] = useState('');
+  const [errors, setErrors] = useState({});
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -19,7 +21,7 @@ const ChangeUsername = () => {
     try {
       await Axios.put(
         '/api/user/username',
-        { currentUsername, newUsername },
+        { groupName, currentUsername, newUsername },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -28,7 +30,11 @@ const ChangeUsername = () => {
       );
       router.push('/');
     } catch (error) {
-      console.error('Failed to change username', error);
+      if (error.response && error.response.status === 422) {
+        setErrors(error.response.data.errors);
+      } else {
+        console.error('Failed to change username', error);
+      }
     }
   };
 
@@ -40,7 +46,23 @@ const ChangeUsername = () => {
       </div>
       <div className="w-1/3 bg-white rounded-lg shadow-lg p-8 mt-12">
         <h2 className="text-3xl font-bold mb-10 text-center">ユーザー名変更</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="mb-8">
+            <label className="block text-gray-700 font-bold mb-2">
+              グループ名
+            </label>
+            <input
+              type="text"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            {errors.groupName && (
+              <p className="text-red-500 text-xs italic">
+                {errors.groupName[0]}
+              </p>
+            )}
+          </div>
           <div className="mb-8">
             <label className="block text-gray-700 font-bold mb-2">
               現在のユーザー名
@@ -50,8 +72,12 @@ const ChangeUsername = () => {
               value={currentUsername}
               onChange={(e) => setCurrentUsername(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
             />
+            {errors.currentUsername && (
+              <p className="text-red-500 text-xs italic">
+                {errors.currentUsername[0]}
+              </p>
+            )}
           </div>
           <div className="mb-14">
             <label className="block text-gray-700 font-bold mb-2">
@@ -62,8 +88,12 @@ const ChangeUsername = () => {
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
             />
+            {errors.newUsername && (
+              <p className="text-red-500 text-xs italic">
+                {errors.newUsername[0]}
+              </p>
+            )}
           </div>
           <div className="flex items-center justify-center">
             <Button text="確定" type="submit" />
