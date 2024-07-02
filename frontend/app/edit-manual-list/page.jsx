@@ -81,7 +81,7 @@ const EditManualList = () => {
           },
         });
         setManuals(manuals.filter((manual) => manual.id !== id));
-        fetchData(pagination.currentPage); // 再度データをフェッチしてジャンルの表示を更新
+        fetchData(pagination.currentPage);
       } catch (error) {
         console.error('Error deleting draft:', error);
       }
@@ -150,8 +150,8 @@ const EditManualList = () => {
                     <th className="w-1/3">ジャンル</th>
                     <th className="w-1/12">作成者</th>
                     <th className="w-1/6 min-w-36">最終更新日時</th>
-                    <th className="w-1/12">削除</th>
-                    <th className="py-4 w-1/12">編集</th>
+                    <th className="w-1/12 min-w-10">削除</th>
+                    <th className="py-4 w-1/12 min-w-10">編集</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -180,7 +180,7 @@ const EditManualList = () => {
                       <td className="border border-gray-300 px-4 min-w-28 w-1/12 whitespace-normal overflow-visible">
                         {manual.users.map((user) => user.username).join(', ')}
                       </td>
-                      <td className="border border-gray-300 px-4 w-1/6 min-w-36 whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 min-w-36 w-1/6 whitespace-normal overflow-visible">
                         {manual.updatedAt}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/12 text-center whitespace-normal overflow-visible">

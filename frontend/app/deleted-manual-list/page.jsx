@@ -143,7 +143,7 @@ const DeletedManualList = () => {
                     <th className="w-1/3">ジャンル</th>
                     <th className="w-1/12">作成者</th>
                     <th className="w-1/6 min-w-36">最終更新日時</th>
-                    <th className="py-4 w-1/12">復元</th>
+                    <th className="py-4 w-1/12 min-w-10">復元</th>
                   </tr>
                 </thead>
                 <tbody>

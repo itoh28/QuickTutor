@@ -45,4 +45,9 @@ class Manual extends Model
     {
         return $this->hasMany(Step::class);
     }
+
+    public function linkedSteps()
+    {
+        return $this->belongsToMany(Step::class, 'step_manuals');
+    }
 }
