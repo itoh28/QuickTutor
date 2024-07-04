@@ -45,6 +45,7 @@ class ManualRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'media_id.required' => 'トップ画像の設定は必須です。',
             'media_id.exists' => 'トップ画像の設定は必須です。',
             'manual_title.required' => 'マニュアルタイトルの入力は必須です。',
             'manual_title.max' => 'マニュアルタイトルは最大30文字までです。',
@@ -53,6 +54,7 @@ class ManualRequest extends FormRequest
             'genres.*.max' => 'ジャンル名は最大15文字までです。',
             'steps.required' => '1つ以上のステップが必要です。',
             'steps.max' => 'ステップは最大50個まで設定できます。',
+            'steps.*.media_id.required' => 'ステップ画像の設定は必須です。',
             'steps.*.media_id.exists' => 'ステップ画像の設定は必須です。',
             'steps.*.step_subtitle.required' => 'ステップサブタイトルの入力は必須です。',
             'steps.*.step_subtitle.max' => 'ステップサブタイトルは最大25文字までです。',

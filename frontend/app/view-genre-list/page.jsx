@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import Header from '../_components/Header';
-import EditModeSidebar from '../_components/EditModeSidebar';
+import ViewModeSidebar from '../_components/ViewModeSidebar';
 import { useRouter } from 'next/navigation';
 import Axios from '../_utils/axiosSetup';
 
-const EditGenreList = () => {
+const ViewGenreList = () => {
   const [genres, setGenres] = useState([]);
   const router = useRouter();
 
@@ -34,7 +34,7 @@ const EditGenreList = () => {
   }, []);
 
   const handleGenreClick = (id) => {
-    router.push(`/edit-genre/${id}`);
+    router.push(`/view-genre/${id}`);
   };
 
   return (
@@ -42,7 +42,7 @@ const EditGenreList = () => {
       <Header />
       <div className="flex flex-grow">
         <div className="w-1/6 min-w-44 bg-main text-white">
-          <EditModeSidebar />
+          <ViewModeSidebar />
         </div>
         <div className="py-10 px-20 flex-grow flex flex-wrap gap-10 align-content-start">
           {genres.map((genre) => (
@@ -60,4 +60,4 @@ const EditGenreList = () => {
   );
 };
 
-export default EditGenreList;
+export default ViewGenreList;

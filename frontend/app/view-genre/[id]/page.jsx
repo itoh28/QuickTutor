@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Header from '../_components/Header';
-import ViewModeSidebar from '../_components/ViewModeSidebar';
+import Header from '@/app/_components/Header';
+import ViewModeSidebar from '@/app/_components/ViewModeSidebar';
 import Link from 'next/link';
-import Axios from '../_utils/axiosSetup';
-import Button from '../_components/Button';
+import Button from '@/app/_components/Button';
+import Axios from '@/app/_utils/axiosSetup';
 
-const ViewManualList = () => {
+const ViewGenreManualList = ({ params }) => {
   const [manuals, setManuals] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -25,11 +25,14 @@ const ViewManualList = () => {
     }
 
     try {
-      const response = await Axios.get(`/api/manuals?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await Axios.get(
+        `/api/genres/${params.id}/manuals?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       const { data, meta } = response.data;
       console.log(data);
       setManuals(data);
@@ -61,6 +64,10 @@ const ViewManualList = () => {
     }
   };
 
+  const handleViewClick = (id) => {
+    localStorage.setItem('prevPage', `/genre/${params.id}`);
+  };
+
   return (
     <div className="flex flex-col w-screen h-screen bg-baseColor">
       <Header />
@@ -69,6 +76,16 @@ const ViewManualList = () => {
           <ViewModeSidebar />
         </div>
         <div className="py-6 px-20 flex-grow">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <input
+                type="text"
+                placeholder="マニュアルのタイトルを入力"
+                className="border-2 border-main focus:outline-none rounded-l pl-4 pr-40 py-2"
+              />
+              <Button text="検索" type="button" rounded="rounded-r" px="px-8" />
+            </div>
+          </div>
           <div className="flex justify-end items-center mb-4">
             <span>{`${pagination.from}-${pagination.to}件/${pagination.totalManuals}件`}</span>
             <div className="flex ml-4">
@@ -110,7 +127,7 @@ const ViewManualList = () => {
                       key={manual.id}
                       className="bg-white border border-gray-300"
                     >
-                      <td className="border border-gray-300 px-4 py-3 w-1/6 whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 w-1/6 whitespace-normal overflow-visible">
                         {manual.media && manual.media.stepImageUrl && (
                           <img
                             src={manual.media.stepImageUrl}
@@ -121,6 +138,11 @@ const ViewManualList = () => {
                       </td>
                       <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
                         {manual.manualTitle}
+                        {manual.isDraft === 1 && (
+                          <span className="ml-2 inline-block rounded-full bg-gray-400 text-white px-2 py-1 text-xs">
+                            下書き
+                          </span>
+                        )}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/3 whitespace-normal overflow-visible">
                         {manual.genres
@@ -130,7 +152,7 @@ const ViewManualList = () => {
                       <td className="border border-gray-300 px-4 min-w-28 w-1/12 whitespace-normal overflow-visible">
                         {manual.users.map((user) => user.username).join(', ')}
                       </td>
-                      <td className="border border-gray-300 px-4 min-w-36 w-1/6 whitespace-normal overflow-visible">
+                      <td className="border border-gray-300 px-4 w-1/6 min-w-36 whitespace-normal overflow-visible">
                         {manual.updatedAt}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/12 min-w-24 text-center whitespace-normal overflow-visible">
@@ -141,6 +163,7 @@ const ViewManualList = () => {
                             fontSize="text-sm"
                             py="py-2"
                             px="px-3"
+                            onClick={() => handleViewClick(manual.id)}
                           />
                         </Link>
                       </td>
@@ -156,4 +179,4 @@ const ViewManualList = () => {
   );
 };
 
-export default ViewManualList;
+export default ViewGenreManualList;

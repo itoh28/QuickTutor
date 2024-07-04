@@ -8,7 +8,7 @@ import Button from '@/app/_components/Button';
 import Axios from '@/app/_utils/axiosSetup';
 import { TrashCanIcon } from '@/app/_components/_icons/TrashCanIcon';
 
-const GenreManualList = ({ params }) => {
+const EditGenreManualList = ({ params }) => {
   const [manuals, setManuals] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -215,4 +215,4 @@ const GenreManualList = ({ params }) => {
   );
 };
 
-export default GenreManualList;
+export default EditGenreManualList;
