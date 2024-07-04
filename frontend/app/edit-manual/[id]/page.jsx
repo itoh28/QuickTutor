@@ -84,25 +84,58 @@ const EditManual = () => {
 
   const handleSubmit = async (isDraft) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const stepsWithMedia = await Promise.all(
+        steps.map(async (step) => {
+          let mediaId = step.media ? step.media.id : null;
+
+          if (step.media && step.media.file) {
+            const mediaFormData = new FormData();
+            mediaFormData.append('file', step.media.file);
+
+            try {
+              const mediaResponse = await Axios.post(
+                '/api/media/upload',
+                mediaFormData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              );
+              mediaId = mediaResponse.data.data.id;
+            } catch (error) {
+              console.error(
+                `Error uploading media for step ${step.number}:`,
+                error,
+              );
+              throw new Error(`Failed to upload media for step ${step.number}`);
+            }
+          }
+
+          return {
+            id: step.id,
+            step_subtitle: step.subtitle,
+            step_comment: step.comment,
+            media_id: mediaId,
+          };
+        }),
+      );
+
       const data = {
         manual_title: title,
         is_draft: isDraft ? '1' : '0',
         media_id: media ? media.id : null,
         genres: tags,
-        steps: steps.map((step) => ({
-          id: step.id,
-          step_subtitle: step.subtitle,
-          step_comment: step.comment,
-          media_id: step.media ? step.media.id : null,
-        })),
+        steps: stepsWithMedia,
       };
 
       console.log('FormData:', data);
-
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No token found');
-      }
 
       await Axios.put(`/api/manuals/${id}`, data, {
         headers: {

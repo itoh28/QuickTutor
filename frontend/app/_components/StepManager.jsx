@@ -23,10 +23,7 @@ const StepManager = ({
     setLocalSteps((prevSteps) => [
       ...prevSteps,
       {
-        id:
-          prevSteps.length > 0
-            ? Math.max(...prevSteps.map((s) => s.id)) + 1
-            : 0,
+        id: prevSteps.length,
         media: null,
         subtitle: '',
         comment: '',

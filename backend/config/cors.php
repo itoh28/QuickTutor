@@ -6,6 +6,7 @@ return [
     'allowed_origins' => [
         'http://localhost',
         'http://localhost:3000',
+        'https://api.quicktutor.work',
         'https://quicktutor.work',
         'https://www.quicktutor.work'
     ],

@@ -30,7 +30,7 @@ class AuthController extends Controller
                 'group_id' => $group->id,
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
-                'role_id' => 3
+                'role_id' => 2
             ]);
 
             $token = $user->createToken('API Token')->plainTextToken;
