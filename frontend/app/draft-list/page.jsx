@@ -99,7 +99,7 @@ const DraftList = () => {
           <EditModeSidebar />
         </div>
         <div className="py-6 px-20 flex-grow">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center">
             <Link href="/create-manual">
               <Button
                 text="＋ 新規作成"
@@ -108,14 +108,6 @@ const DraftList = () => {
                 py="py-3"
               />
             </Link>
-            <div className="flex items-center">
-              <input
-                type="text"
-                placeholder="マニュアルのタイトルを入力"
-                className="border-2 border-main focus:outline-none rounded-l pl-4 pr-40 py-2"
-              />
-              <Button text="検索" type="button" rounded="rounded-r" px="px-8" />
-            </div>
           </div>
           <div className="flex justify-end items-center mb-4">
             <span>{`${pagination.from}-${pagination.to}件/${pagination.totalManuals}件`}</span>

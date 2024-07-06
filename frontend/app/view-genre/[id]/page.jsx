@@ -75,17 +75,7 @@ const ViewGenreManualList = ({ params }) => {
         <div className="w-1/6 max-w-48 bg-main text-white">
           <ViewModeSidebar />
         </div>
-        <div className="py-6 px-20 flex-grow">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center">
-              <input
-                type="text"
-                placeholder="マニュアルのタイトルを入力"
-                className="border-2 border-main focus:outline-none rounded-l pl-4 pr-40 py-2"
-              />
-              <Button text="検索" type="button" rounded="rounded-r" px="px-8" />
-            </div>
-          </div>
+        <div className="mt-2 py-6 px-20 flex-grow">
           <div className="flex justify-end items-center mb-4">
             <span>{`${pagination.from}-${pagination.to}件/${pagination.totalManuals}件`}</span>
             <div className="flex ml-4">
@@ -108,7 +98,7 @@ const ViewGenreManualList = ({ params }) => {
           <div className="flex flex-col">
             <div
               className="overflow-auto"
-              style={{ maxHeight: 'calc(100vh - 250px)' }}
+              style={{ maxHeight: 'calc(100vh - 200px)' }}
             >
               <table className="table-fixed min-w-full border font-semibold border-gray-300">
                 <thead className="sticky top-0 bg-main text-white">
