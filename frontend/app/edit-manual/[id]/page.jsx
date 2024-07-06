@@ -188,8 +188,10 @@ const EditManual = () => {
             <div className="relative">
               <MediaUpload setMedia={setMedia} initialMedia={media} />
               {media && (
-                <div className="absolute bottom-1 right-8">
-                  <EnlargeIcon onClick={() => handleImageClick(media.url)} />
+                <div className="absolute bottom-0 right-8">
+                  <button onClick={() => handleImageClick(media.url)}>
+                    <EnlargeIcon />
+                  </button>
                 </div>
               )}
             </div>

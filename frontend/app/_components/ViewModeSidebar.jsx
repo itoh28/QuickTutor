@@ -19,7 +19,7 @@ const ViewModeSidebar = () => {
         setActiveIndex(0);
         break;
       case pathname.startsWith('/view-genre-list') ||
-        pathname.startsWith('/genre/'):
+        pathname.startsWith('/view-genre/'):
         setActiveIndex(1);
         break;
       default:
@@ -53,7 +53,7 @@ const ViewModeSidebar = () => {
   };
 
   return (
-    <div className="flex flex-col text-lg text-white h-full">
+    <div className="flex flex-col text-lg text-white h-full w-48">
       <Link href="/edit-manual-list">
         <div className="w-full flex justify-center text-black bg-accent2 hover:bg-baseColor hover:text-main py-4">
           <button className="mr-2 font-semibold flex items-center">

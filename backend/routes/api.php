@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/manuals/{id}', [ManualController::class, 'show']);
     Route::put('/manuals/{id}', [ManualController::class, 'update']);
     Route::delete('/manuals/{id}', [ManualController::class, 'destroy']);
+    Route::delete('/manuals/{id}/delete', [ManualController::class, 'permanentDestroy']);
+
     Route::get('/trashed', [ManualController::class, 'trashed']);
     Route::post('/trashed/{id}', [ManualController::class, 'restore']);
     Route::get('/drafts', [ManualController::class, 'drafts']);
@@ -33,4 +35,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/genres', [GenreController::class, 'index']);
     Route::delete('/genres/{id}', [GenreController::class, 'destroy']);
     Route::get('/genres/{id}/manuals', [ManualController::class, 'getManualsByGenre']);
+    Route::get('/published-genres', [ManualController::class, 'getPublishedGenres']);
 });
