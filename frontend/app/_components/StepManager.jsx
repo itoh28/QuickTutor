@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { TrashCanIcon } from './_icons/TrashCanIcon';
 import MediaUpload from './MediaUpload';
 import { EnlargeIcon } from './_icons/EnlargeIcon';
@@ -10,69 +10,80 @@ const StepManager = ({
   errors = [],
 }) => {
   const [steps, setLocalSteps] = useState(initialSteps);
+  const stepsRef = useRef(initialSteps);
 
   useEffect(() => {
+    stepsRef.current = initialSteps;
     setLocalSteps(initialSteps);
   }, [initialSteps]);
 
   useEffect(() => {
-    setSteps(steps);
-  }, [steps, setSteps]);
+    setSteps(stepsRef.current);
+  }, [setSteps]);
 
   const addStep = () => {
-    setLocalSteps((prevSteps) => [
-      ...prevSteps,
+    const newSteps = [
+      ...stepsRef.current,
       {
-        id: prevSteps.length,
+        id: stepsRef.current.length,
         media: null,
         subtitle: '',
         comment: '',
-        number: prevSteps.length + 1,
+        number: stepsRef.current.length + 1,
         focusedOnce: false,
       },
-    ]);
+    ];
+    stepsRef.current = newSteps;
+    setLocalSteps(newSteps);
+    setSteps(newSteps);
   };
 
   const removeStep = (id) => {
-    setLocalSteps((prevSteps) => {
-      const filteredSteps = prevSteps.filter((step) => step.id !== id);
-      const updatedSteps = filteredSteps.map((step, index) => ({
-        ...step,
-        number: index + 1,
-        subtitle: step.subtitle.replace(/^\d+\.\s*/, `${index + 1}. `),
-      }));
-      return updatedSteps;
-    });
+    const filteredSteps = stepsRef.current.filter((step) => step.id !== id);
+    const updatedSteps = filteredSteps.map((step, index) => ({
+      ...step,
+      number: index + 1,
+      subtitle: step.subtitle.replace(/^\d+\.\s*/, `${index + 1}. `),
+    }));
+    stepsRef.current = updatedSteps;
+    setLocalSteps(updatedSteps);
+    setSteps(updatedSteps);
   };
 
   const handleMediaChange = (id, media) => {
-    setLocalSteps((prevSteps) =>
-      prevSteps.map((step) => (step.id === id ? { ...step, media } : step)),
+    const updatedSteps = stepsRef.current.map((step) =>
+      step.id === id ? { ...step, media } : step,
     );
+    stepsRef.current = updatedSteps;
+    setLocalSteps(updatedSteps);
+    setSteps(updatedSteps);
   };
 
   const handleSubtitleChange = (id, value) => {
-    setLocalSteps((prevSteps) =>
-      prevSteps.map((step) =>
-        step.id === id ? { ...step, subtitle: value } : step,
-      ),
+    const updatedSteps = stepsRef.current.map((step) =>
+      step.id === id ? { ...step, subtitle: value } : step,
     );
+    stepsRef.current = updatedSteps;
+    setLocalSteps(updatedSteps);
+    setSteps(updatedSteps);
   };
 
   const handleCommentChange = (id, value) => {
-    setLocalSteps((prevSteps) =>
-      prevSteps.map((step) =>
-        step.id === id ? { ...step, comment: value } : step,
-      ),
+    const updatedSteps = stepsRef.current.map((step) =>
+      step.id === id ? { ...step, comment: value } : step,
     );
+    stepsRef.current = updatedSteps;
+    setLocalSteps(updatedSteps);
+    setSteps(updatedSteps);
   };
 
   const handleFocus = (id) => {
-    setLocalSteps((prevSteps) =>
-      prevSteps.map((step) =>
-        step.id === id ? { ...step, focusedOnce: true } : step,
-      ),
+    const updatedSteps = stepsRef.current.map((step) =>
+      step.id === id ? { ...step, focusedOnce: true } : step,
     );
+    stepsRef.current = updatedSteps;
+    setLocalSteps(updatedSteps);
+    setSteps(updatedSteps);
   };
 
   return (

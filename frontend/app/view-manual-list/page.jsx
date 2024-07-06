@@ -68,7 +68,7 @@ const ViewManualList = () => {
         <div className="w-1/6 max-w-48 bg-main text-white">
           <ViewModeSidebar />
         </div>
-        <div className="py-6 px-20 flex-grow">
+        <div className="mt-2 py-6 px-20 flex-grow">
           <div className="flex justify-end items-center mb-4">
             <span>{`${pagination.from}-${pagination.to}件/${pagination.totalManuals}件`}</span>
             <div className="flex ml-4">
@@ -91,7 +91,7 @@ const ViewManualList = () => {
           <div className="flex flex-col">
             <div
               className="overflow-auto"
-              style={{ maxHeight: 'calc(100vh - 250px)' }}
+              style={{ maxHeight: 'calc(100vh - 200px)' }}
             >
               <table className="table-fixed min-w-full border font-semibold border-gray-300">
                 <thead className="sticky top-0 bg-main text-white">
