@@ -72,7 +72,7 @@ const ViewGenreManualList = ({ params }) => {
     <div className="flex flex-col w-screen h-screen bg-baseColor">
       <Header />
       <div className="flex flex-grow">
-        <div className="w-1/6 min-w-44 bg-main text-white">
+        <div className="w-1/6 max-w-48 bg-main text-white">
           <ViewModeSidebar />
         </div>
         <div className="py-6 px-20 flex-grow">

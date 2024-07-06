@@ -41,7 +41,7 @@ const EditGenreList = () => {
     <div className="flex flex-col w-screen h-screen bg-baseColor">
       <Header />
       <div className="flex flex-grow">
-        <div className="w-1/6 min-w-44 bg-main text-white">
+        <div className="w-1/6 max-w-48 bg-main text-white">
           <EditModeSidebar />
         </div>
         <div className="py-10 px-20 flex-grow flex flex-wrap gap-10 align-content-start">

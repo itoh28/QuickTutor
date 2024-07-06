@@ -21,7 +21,7 @@ const EditModeSidebar = () => {
         setActiveIndex(0);
         break;
       case pathname.startsWith('/edit-genre-list') ||
-        pathname.startsWith('/genre/'):
+        pathname.startsWith('/edit-genre/'):
         setActiveIndex(1);
         break;
       case pathname.startsWith('/draft-list'):
@@ -63,7 +63,7 @@ const EditModeSidebar = () => {
   };
 
   return (
-    <div className="flex flex-col text-lg text-white h-full">
+    <div className="flex flex-col text-lg text-white h-full w-48">
       <Link href="/view-manual-list">
         <div className="w-full flex justify-center text-black bg-accent2 hover:bg-baseColor hover:text-main py-4">
           <button className="mr-2 font-semibold flex items-center">

@@ -164,6 +164,24 @@ class ManualController extends Controller
         }
     }
 
+    public function permanentDestroy($id)
+    {
+        try {
+            $user = Auth::user();
+            $manual = Manual::onlyTrashed()
+                ->where('id', $id)
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('group_id', $user->group_id);
+                })
+                ->firstOrFail();
+            $manual->forceDelete();
+
+            return response()->json(['message' => 'Manual permanently deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while permanently deleting the manual'], 500);
+        }
+    }
+
     public function trashed()
     {
         try {
@@ -258,5 +276,17 @@ class ManualController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while fetching manuals by genre'], 500);
         }
+    }
+
+    public function getPublishedGenres()
+    {
+        $user = Auth::user();
+        $genres = Genre::whereHas('manuals', function ($query) {
+            $query->where('is_draft', false);
+        })
+            ->where('group_id', $user->group_id)
+            ->get();
+
+        return response()->json($genres);
     }
 }

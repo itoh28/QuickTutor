@@ -83,19 +83,19 @@ const Header = ({ showUserInfo = 'true' }) => {
   };
 
   return (
-    <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
+    <div className="w-screen text-white bg-main p-5 flex justify-between items-center relative z-50">
       <div className="text-2xl font-bold ml-2">
         <Link href={'/'}>
           <button>QuickTutor</button>
         </Link>
       </div>
       {showUserInfo && user && (
-        <div className="text-xl font-bold flex space-x-12 mr-4">
+        <div className="text-xl font-bold flex space-x-12 mr-4 relative">
           <span>{user.role}</span>
           <div>
             <button onClick={toggleDropdown}>{user.username} ▼</button>
             {isDropdownOpen && (
-              <div className="absolute right-4 mt-2 w-40 text-black text-base bg-white border border-main">
+              <div className="absolute left-32 mt-2 w-40 text-black text-base bg-white border border-main z-50">
                 <button
                   onClick={handleLogout}
                   className="w-full px-4 py-2 text-center hover:bg-gray-200 border-b border-main"

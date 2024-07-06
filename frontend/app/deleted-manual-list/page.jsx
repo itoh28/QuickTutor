@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Button from '../_components/Button';
 import Axios from '../_utils/axiosSetup';
 import { RestoreIcon } from '../_components/_icons/RestoreIcon';
+import { TrashCanIcon } from '../_components/_icons/TrashCanIcon';
 
 const DeletedManualList = () => {
   const [manuals, setManuals] = useState([]);
@@ -85,11 +86,36 @@ const DeletedManualList = () => {
     }
   };
 
+  const handleDeleteManual = async (id) => {
+    if (
+      confirm(
+        'ごみ箱からマニュアルを削除すると、以後そのマニュアルを復元できません。本当にマニュアルを削除しますか？',
+      )
+    ) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+
+      try {
+        await Axios.delete(`/api/manuals/${id}/delete`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setManuals(manuals.filter((manual) => manual.id !== id));
+      } catch (error) {
+        console.error('Error deleting manual:', error);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col w-screen h-screen bg-baseColor">
       <Header />
       <div className="flex flex-grow">
-        <div className="w-1/6 min-w-44 bg-main text-white">
+        <div className="w-1/6 max-w-48 bg-main text-white">
           <EditModeSidebar />
         </div>
         <div className="py-6 px-20 flex-grow">
@@ -144,6 +170,7 @@ const DeletedManualList = () => {
                     <th className="w-1/12">作成者</th>
                     <th className="w-1/6 min-w-36">最終更新日時</th>
                     <th className="py-4 w-1/12 min-w-10">復元</th>
+                    <th className="py-4 w-1/12 min-w-10">削除</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -178,7 +205,13 @@ const DeletedManualList = () => {
                       <td className="border border-gray-300 px-4 w-1/12 text-center whitespace-normal overflow-visible">
                         <RestoreIcon
                           onClick={() => handleRestoreManual(manual.id)}
-                          className="mx-auto"
+                          className="mx-auto cursor-pointer"
+                        />
+                      </td>
+                      <td className="border border-gray-300 px-4 w-1/12 text-center whitespace-normal overflow-visible">
+                        <TrashCanIcon
+                          onClick={() => handleDeleteManual(manual.id)}
+                          className="mx-auto cursor-pointer"
                         />
                       </td>
                     </tr>

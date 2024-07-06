@@ -77,18 +77,20 @@ const ViewManual = () => {
       <Header />
       <div className="w-4/5 rounded-t bg-main text-2xl font-bold mt-12 p-6">
         <div className="flex">
-          <div className="relative mr-4 w-1/4">
+          <div className="relative mr-4 w-[350px] h-[197px]">
             {media && (
-              <>
+              <div className="relative w-full h-full">
                 <img
                   src={media.url}
                   alt="Main media"
-                  className="w-full h-auto max-h-48 object-contain"
+                  className="w-full h-full object-contain"
                 />
-                <div className="absolute bottom-1 right-6">
-                  <EnlargeIcon onClick={() => handleImageClick(media.url)} />
+                <div className="absolute bottom-2 right-2">
+                  <button onClick={() => handleImageClick(media.url)}>
+                    <EnlargeIcon />
+                  </button>
                 </div>
-              </>
+              </div>
             )}
           </div>
           <div className="flex-grow flex flex-col ml-6">
@@ -112,20 +114,20 @@ const ViewManual = () => {
       <div className="w-4/5 mb-12 bg-white rounded-b p-6">
         {steps.map((step, index) => (
           <div key={index} className="mb-6 flex border-b-2 pb-4">
-            <div className="relative mr-4 w-1/4">
+            <div className="relative mr-4 w-[350px] h-[197px]">
               {step.media && (
-                <>
+                <div className="relative w-full h-full">
                   <img
                     src={step.media.url}
                     alt={`Step ${step.number} media`}
-                    className="w-full h-auto max-h-48 object-contain"
+                    className="w-full h-full object-contain"
                   />
-                  <div className="absolute bottom-1 right-6">
-                    <EnlargeIcon
-                      onClick={() => handleImageClick(step.media.url)}
-                    />
+                  <div className="absolute bottom-2 right-2">
+                    <button onClick={() => handleImageClick(step.media.url)}>
+                      <EnlargeIcon />
+                    </button>
                   </div>
-                </>
+                </div>
               )}
             </div>
             <div className="flex-grow flex flex-col bg-white rounded">
