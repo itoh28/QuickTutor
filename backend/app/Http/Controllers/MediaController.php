@@ -24,6 +24,14 @@ class MediaController extends Controller
 
         $filePath = 'media/' . $file->getClientOriginalName();
 
+        // デバッグ情報を追加
+        Log::info('AWS Credentials and Config:', [
+            'AWS_DEFAULT_REGION' => env('AWS_DEFAULT_REGION'),
+            'AWS_ACCESS_KEY_ID' => env('AWS_ACCESS_KEY_ID'),
+            'AWS_SECRET_ACCESS_KEY' => env('AWS_SECRET_ACCESS_KEY'),
+            'AWS_BUCKET' => env('AWS_BUCKET'),
+        ]);
+
         $region = env('AWS_DEFAULT_REGION');
         $accessKey = env('AWS_ACCESS_KEY_ID');
         $secretKey = env('AWS_SECRET_ACCESS_KEY');
