@@ -244,7 +244,6 @@ const ViewManual = () => {
                 style={{
                   whiteSpace: 'pre-wrap',
                   overflow: 'auto',
-                  maxHeight: '60px',
                   height: 'auto',
                 }}
               />
