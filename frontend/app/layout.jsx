@@ -6,7 +6,8 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'QuickTutor',
-  description: '誰でも手軽にマニュアルの作成・閲覧ができます。',
+  description:
+    '誰でも手軽にマニュアル作成・閲覧ができるマニュアル管理アプリです。',
 };
 
 export default function RootLayout({ children }) {
