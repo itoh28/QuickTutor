@@ -22,7 +22,21 @@ class UploadMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|mimes:jpg,jpeg,png,mp4,mov|max:108800', // 最大サイズは約106MB
+            'file' => 'required|file|mimes:jpg,jpeg,JPG,JPEG,png,mp4,mov,MOV|max:108800', // 最大サイズは約106MB
+        ];
+    }
+
+    /**
+     * Get the custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'file.required' => 'ファイルの設定は必須です。',
+            'file.mimes' => 'サポートされていないファイル形式です。jpg、jpeg、JPG、JPEG、png、mp4、mov、MOV形式のファイルを選択してください。',
+            'file.max' => 'ファイルサイズが大きすぎます。最大サイズは106MBです。',
         ];
     }
 }
