@@ -198,7 +198,7 @@ const ViewManual = () => {
             <div className="flex items-center mt-14">
               <button
                 onClick={handleSlideModeToggle}
-                className="max-w-36 text-sm text-white bg-green-500 p-1 rounded-lg"
+                className="max-w-36 mr-8 text-sm text-white bg-green-500 p-1 rounded-lg"
               >
                 スライドモードへ
               </button>

@@ -22,6 +22,7 @@ const EditManual = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState('');
   const [errors, setErrors] = useState({});
+  const [mediaError, setMediaError] = useState('');
   const [lastUpdatedBy, setLastUpdatedBy] = useState('');
   const [lastUpdatedAt, setLastUpdatedAt] = useState('');
   const titleInputRef = useRef(null);
@@ -118,7 +119,12 @@ const EditManual = () => {
                 `Error uploading media for step ${step.number}:`,
                 error,
               );
-              throw new Error(`Failed to upload media for step ${step.number}`);
+              if (error.response && error.response.data.errors) {
+                setMediaError(error.response.data.errors.file[0]);
+              } else {
+                setMediaError(`Failed to upload media for step ${step.number}`);
+              }
+              return step;
             }
           }
 
@@ -190,7 +196,11 @@ const EditManual = () => {
         <div className="relative flex">
           <div className="relative mr-4 py-6">
             <div className="relative">
-              <MediaUpload setMedia={setMedia} initialMedia={media} />
+              <MediaUpload
+                setMedia={setMedia}
+                initialMedia={media}
+                setError={setMediaError}
+              />
               {media && (
                 <div className="absolute bottom-0 right-8">
                   <button onClick={() => handleImageClick(media.url)}>
@@ -199,6 +209,9 @@ const EditManual = () => {
                 </div>
               )}
             </div>
+            {mediaError && (
+              <p className="text-red-500 text-xs italic">{mediaError}</p>
+            )}
             {errors.media_id && (
               <p className="text-red-500 text-xs italic">
                 {errors.media_id[0]}
@@ -217,7 +230,7 @@ const EditManual = () => {
               </div>
               <div className="absolute top-6 right-0 flex flex-col items-end">
                 <EscButton />
-                <div className="text-sm text-white mt-28 mr-6">
+                <div className="text-sm text-white mt-28 ml-6 mr-6">
                   <p>最終更新者: {lastUpdatedBy}</p>
                   <p>
                     最終更新日時: {new Date(lastUpdatedAt).toLocaleString()}

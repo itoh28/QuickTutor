@@ -29,6 +29,7 @@ const CreateManual = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState('');
   const [errors, setErrors] = useState({});
+  const [mediaError, setMediaError] = useState('');
   const titleInputRef = useRef(null);
   const router = useRouter();
 
@@ -75,7 +76,12 @@ const CreateManual = () => {
           mediaId = mediaResponse.data.data.id;
         } catch (error) {
           console.error('Error uploading main media:', error);
-          throw new Error('Failed to upload media');
+          if (error.response && error.response.data.errors) {
+            setMediaError(error.response.data.errors.file[0]);
+          } else {
+            setMediaError('Failed to upload media');
+          }
+          return;
         }
       }
 
@@ -168,13 +174,16 @@ const CreateManual = () => {
         <div className="relative flex">
           <div className="relative mr-4 py-6">
             <div className="relative">
-              <MediaUpload setMedia={setMedia} />
+              <MediaUpload setMedia={setMedia} setError={setMediaError} />
               {media && (
                 <div className="absolute bottom-1 right-8">
                   <EnlargeIcon onClick={() => handleImageClick(media.url)} />
                 </div>
               )}
             </div>
+            {mediaError && (
+              <p className="text-red-500 text-xs italic">{mediaError}</p>
+            )}
             {errors.media_id && (
               <p className="text-red-500 text-xs italic">
                 {errors.media_id[0]}

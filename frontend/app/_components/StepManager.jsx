@@ -39,15 +39,21 @@ const StepManager = ({
   };
 
   const removeStep = (id) => {
-    const filteredSteps = stepsRef.current.filter((step) => step.id !== id);
-    const updatedSteps = filteredSteps.map((step, index) => ({
-      ...step,
-      number: index + 1,
-      subtitle: step.subtitle.replace(/^\d+\.\s*/, `${index + 1}. `),
-    }));
-    stepsRef.current = updatedSteps;
-    setLocalSteps(updatedSteps);
-    setSteps(updatedSteps);
+    if (
+      confirm(
+        '本当にマニュアルを削除しますか？削除したステップは復元できません。',
+      )
+    ) {
+      const filteredSteps = stepsRef.current.filter((step) => step.id !== id);
+      const updatedSteps = filteredSteps.map((step, index) => ({
+        ...step,
+        number: index + 1,
+        subtitle: step.subtitle.replace(/^\d+\.\s*/, `${index + 1}. `),
+      }));
+      stepsRef.current = updatedSteps;
+      setLocalSteps(updatedSteps);
+      setSteps(updatedSteps);
+    }
   };
 
   const handleMediaChange = (id, media) => {

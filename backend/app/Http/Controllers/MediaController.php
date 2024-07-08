@@ -70,8 +70,8 @@ class MediaController extends Controller
             $mediaUrl = $result['ObjectURL'];
 
             $media = new Media([
-                'step_image_url' => in_array($file->getClientOriginalExtension(), ['mp4', 'mov']) ? null : $mediaUrl,
-                'step_video_url' => in_array($file->getClientOriginalExtension(), ['mp4', 'mov']) ? $mediaUrl : null,
+                'step_image_url' => in_array($file->getClientOriginalExtension(), ['mp4', 'mov', 'MOV']) ? null : $mediaUrl,
+                'step_video_url' => in_array($file->getClientOriginalExtension(), ['mp4', 'mov', 'MOV']) ? $mediaUrl : null,
                 's3_key' => $filePath,
                 'file_size' => $file->getSize(),
                 'content_type' => $file->getMimeType(),

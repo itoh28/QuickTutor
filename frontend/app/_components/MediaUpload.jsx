@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 
-const MediaUpload = ({ setMedia, initialMedia = null }) => {
+const MediaUpload = ({ setMedia, initialMedia = null, setError }) => {
   const [mediaPreview, setMediaPreview] = useState(initialMedia?.url || null);
   const [mediaType, setMediaType] = useState(initialMedia?.type || null);
   const fileInputRef = useRef(null);
@@ -18,8 +18,14 @@ const MediaUpload = ({ setMedia, initialMedia = null }) => {
     const file = e.target.files[0];
     if (file) {
       const filetype = file.type;
-      const validImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-      const validVideoTypes = ['video/mp4', 'video/mov'];
+      const validImageTypes = [
+        'image/jpg',
+        'image/jpeg',
+        'image/JPG',
+        'image/JPEG',
+        'image/png',
+      ];
+      const validVideoTypes = ['video/mp4', 'video/mov', 'video/MOV'];
 
       if (
         validImageTypes.includes(filetype) ||
@@ -32,10 +38,9 @@ const MediaUpload = ({ setMedia, initialMedia = null }) => {
           type: validImageTypes.includes(filetype) ? 'image' : 'video',
           file,
         });
+        setError('');
       } else {
-        alert(
-          '対応していないファイル形式です。画像または動画をアップロードしてください。',
-        );
+        setError('サポートされていないファイル形式です。');
       }
     }
   };
