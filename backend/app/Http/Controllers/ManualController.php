@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Manual;
 use App\Models\Genre;
+use App\Models\User;
 use App\Http\Requests\ManualRequest;
 use App\Http\Resources\ManualResource;
 use Illuminate\Support\Facades\Auth;
@@ -91,11 +92,27 @@ class ManualController extends Controller
                 })
                 ->findOrFail($id);
 
-            return new ManualResource($manual);
+            $lastUpdatedUser = $manual->users->sortByDesc('pivot.updated_at')->first();
+            if ($lastUpdatedUser) {
+                $lastUpdatedBy = $lastUpdatedUser->username;
+                $lastUpdatedAt = $lastUpdatedUser->pivot->updated_at;
+            } else {
+                $lastUpdatedBy = $manual->users->first()->username;
+                $lastUpdatedAt = $manual->created_at;
+            }
+
+            $manualResource = new ManualResource($manual);
+            $manualResource->additional([
+                'last_updated_by' => $lastUpdatedBy,
+                'last_updated_at' => $lastUpdatedAt,
+            ]);
+
+            return $manualResource;
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
     }
+
 
     public function update(ManualRequest $request, $id)
     {
@@ -134,18 +151,34 @@ class ManualController extends Controller
             }
 
             if ($user) {
-                $manual->users()->syncWithoutDetaching([$user->id]);
+                $manual->users()->syncWithoutDetaching([$user->id => ['updated_at' => now()]]);
             }
 
             $manual->load('media', 'genres', 'steps', 'users');
 
-            return new ManualResource($manual);
+            $lastUpdatedUser = $manual->users->sortByDesc('pivot.updated_at')->first();
+            if ($lastUpdatedUser) {
+                $lastUpdatedBy = $lastUpdatedUser->username;
+                $lastUpdatedAt = $lastUpdatedUser->pivot->updated_at->toDateTimeString();
+            } else {
+                $lastUpdatedBy = $manual->users->first()->username;
+                $lastUpdatedAt = $manual->created_at->toDateTimeString();
+            }
+
+            $manualResource = new ManualResource($manual);
+            $manualResource->additional([
+                'last_updated_by' => $lastUpdatedBy,
+                'last_updated_at' => $lastUpdatedAt,
+            ]);
+
+            return $manualResource;
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
     }
+
 
     public function destroy($id)
     {
