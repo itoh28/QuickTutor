@@ -31,7 +31,9 @@ class ManualResource extends JsonResource
             }),
             'genres' => GenreResource::collection($this->whenLoaded('genres')),
             'steps' => StepResource::collection($this->whenLoaded('steps')),
-            'media' => new MediaResource($this->whenLoaded('media'))
+            'media' => new MediaResource($this->whenLoaded('media')),
+            'lastUpdatedBy' => $this->additional['last_updated_by'] ?? null,
+            'lastUpdatedAt' => $this->additional['last_updated_at'] ?? null
         ];
 
         if ($this->deleted_at) {

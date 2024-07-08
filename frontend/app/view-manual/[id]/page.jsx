@@ -19,6 +19,8 @@ const ViewManual = () => {
   const [modalImageSrc, setModalImageSrc] = useState('');
   const [isSlideMode, setIsSlideMode] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [lastUpdatedBy, setLastUpdatedBy] = useState('');
+  const [lastUpdatedAt, setLastUpdatedAt] = useState('');
 
   useEffect(() => {
     const fetchManual = async () => {
@@ -56,6 +58,8 @@ const ViewManual = () => {
               }
             : null,
         );
+        setLastUpdatedBy(manual.lastUpdatedBy);
+        setLastUpdatedAt(manual.lastUpdatedAt);
       } catch (error) {
         console.error('Error fetching manual:', error);
       }
@@ -102,7 +106,7 @@ const ViewManual = () => {
           <button
             onClick={handlePreviousStep}
             disabled={currentStepIndex === 0}
-            className="absolute left-10 ml-4 text-5xl text-white"
+            className="absolute left-0 ml-4 text-4xl text-white"
           >
             &lt;
           </button>
@@ -137,7 +141,7 @@ const ViewManual = () => {
           <button
             onClick={handleNextStep}
             disabled={currentStepIndex === steps.length - 1}
-            className="absolute right-0 mr-10 text-5xl text-white"
+            className="absolute right-0 mr-4 text-4xl text-white"
           >
             &gt;
           </button>
@@ -191,12 +195,18 @@ const ViewManual = () => {
               <EscButton />
             </div>
             <div className="bg-white rounded p-2 text-lg max-w-md">{title}</div>
-            <button
-              onClick={handleSlideModeToggle}
-              className="max-w-36 text-sm text-white bg-green-500 mt-14 p-1 rounded-lg"
-            >
-              スライドモードへ
-            </button>
+            <div className="flex items-center mt-14">
+              <button
+                onClick={handleSlideModeToggle}
+                className="max-w-36 text-sm text-white bg-green-500 p-1 rounded-lg"
+              >
+                スライドモードへ
+              </button>
+              <div className="ml-auto text-sm text-white">
+                <p>最終更新者: {lastUpdatedBy}</p>
+                <p>最終更新日時: {new Date(lastUpdatedAt).toLocaleString()}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

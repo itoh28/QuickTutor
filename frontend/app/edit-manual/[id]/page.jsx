@@ -22,6 +22,8 @@ const EditManual = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState('');
   const [errors, setErrors] = useState({});
+  const [lastUpdatedBy, setLastUpdatedBy] = useState('');
+  const [lastUpdatedAt, setLastUpdatedAt] = useState('');
   const titleInputRef = useRef(null);
 
   useEffect(() => {
@@ -63,6 +65,8 @@ const EditManual = () => {
               }
             : null,
         );
+        setLastUpdatedBy(manual.lastUpdatedBy);
+        setLastUpdatedAt(manual.lastUpdatedAt);
       } catch (error) {
         console.error('Error fetching manual:', error);
       }
@@ -202,7 +206,7 @@ const EditManual = () => {
             )}
           </div>
           <div className="flex-grow flex flex-col my-2">
-            <div className="flex w-full justify-between">
+            <div className="flex w-full justify-between items-start relative">
               <div className="mt-6">
                 <TagGenerator setTags={setTags} initialTags={tags} />
                 {errors.genres && (
@@ -211,8 +215,14 @@ const EditManual = () => {
                   </p>
                 )}
               </div>
-              <div className="mt-3">
+              <div className="absolute top-6 right-0 flex flex-col items-end">
                 <EscButton />
+                <div className="text-sm text-white mt-28 mr-6">
+                  <p>最終更新者: {lastUpdatedBy}</p>
+                  <p>
+                    最終更新日時: {new Date(lastUpdatedAt).toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
             <input
