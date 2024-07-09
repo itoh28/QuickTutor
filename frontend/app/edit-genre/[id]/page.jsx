@@ -66,22 +66,28 @@ const EditGenreManualList = ({ params }) => {
   };
 
   const handleDeleteManual = async (id) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
+    if (
+      confirm(
+        '本当にマニュアルを削除しますか？削除したマニュアルはごみ箱から復元できます。',
+      )
+    ) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
 
-    try {
-      await Axios.delete(`/api/manuals/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setManuals(manuals.filter((manual) => manual.id !== id));
-      fetchData(pagination.currentPage);
-    } catch (error) {
-      console.error('Error deleting manual:', error);
+      try {
+        await Axios.delete(`/api/manuals/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setManuals(manuals.filter((manual) => manual.id !== id));
+        fetchData(pagination.currentPage);
+      } catch (error) {
+        console.error('Error deleting manual:', error);
+      }
     }
   };
 

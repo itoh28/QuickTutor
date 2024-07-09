@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 
-const MediaUpload = ({ setMedia, initialMedia = null, setError }) => {
+const MediaUpload = ({
+  setMedia,
+  initialMedia = null,
+  allowOnlyImages = false,
+}) => {
   const [mediaPreview, setMediaPreview] = useState(initialMedia?.url || null);
   const [mediaType, setMediaType] = useState(initialMedia?.type || null);
   const fileInputRef = useRef(null);
@@ -29,7 +33,7 @@ const MediaUpload = ({ setMedia, initialMedia = null, setError }) => {
 
       if (
         validImageTypes.includes(filetype) ||
-        validVideoTypes.includes(filetype)
+        (!allowOnlyImages && validVideoTypes.includes(filetype))
       ) {
         setMediaPreview(URL.createObjectURL(file));
         setMediaType(validImageTypes.includes(filetype) ? 'image' : 'video');
@@ -38,9 +42,8 @@ const MediaUpload = ({ setMedia, initialMedia = null, setError }) => {
           type: validImageTypes.includes(filetype) ? 'image' : 'video',
           file,
         });
-        setError('');
       } else {
-        setError('サポートされていないファイル形式です。');
+        alert('サポートされていないファイル形式です。');
       }
     }
   };
