@@ -22,7 +22,6 @@ const EditManual = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState('');
   const [errors, setErrors] = useState({});
-  const [mediaError, setMediaError] = useState('');
   const [lastUpdatedBy, setLastUpdatedBy] = useState('');
   const [lastUpdatedAt, setLastUpdatedAt] = useState('');
   const titleInputRef = useRef(null);
@@ -119,12 +118,7 @@ const EditManual = () => {
                 `Error uploading media for step ${step.number}:`,
                 error,
               );
-              if (error.response && error.response.data.errors) {
-                setMediaError(error.response.data.errors.file[0]);
-              } else {
-                setMediaError(`Failed to upload media for step ${step.number}`);
-              }
-              return step;
+              throw new Error(`Failed to upload media for step ${step.number}`);
             }
           }
 
@@ -199,9 +193,9 @@ const EditManual = () => {
               <MediaUpload
                 setMedia={setMedia}
                 initialMedia={media}
-                setError={setMediaError}
+                allowOnlyImages={true}
               />
-              {media && (
+              {media && media.type === 'image' && (
                 <div className="absolute bottom-0 right-8">
                   <button onClick={() => handleImageClick(media.url)}>
                     <EnlargeIcon />
@@ -209,9 +203,6 @@ const EditManual = () => {
                 </div>
               )}
             </div>
-            {mediaError && (
-              <p className="text-red-500 text-xs italic">{mediaError}</p>
-            )}
             {errors.media_id && (
               <p className="text-red-500 text-xs italic">
                 {errors.media_id[0]}

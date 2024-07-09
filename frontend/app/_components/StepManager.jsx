@@ -41,7 +41,7 @@ const StepManager = ({
   const removeStep = (id) => {
     if (
       confirm(
-        '本当にマニュアルを削除しますか？削除したステップは復元できません。',
+        '本当にステップを削除しますか？削除したステップは復元できません。',
       )
     ) {
       const filteredSteps = stepsRef.current.filter((step) => step.id !== id);
@@ -102,7 +102,7 @@ const StepManager = ({
                 setMedia={(file) => handleMediaChange(step.id, file)}
                 initialMedia={step.media}
               />
-              {step.media && (
+              {step.media && step.media.type === 'image' && (
                 <div className="absolute bottom-3 right-8">
                   <EnlargeIcon onClick={() => onImageClick(step.media.url)} />
                 </div>
