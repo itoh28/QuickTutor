@@ -93,18 +93,42 @@ const EditManual = () => {
         throw new Error('No token found');
       }
 
+      let mediaId = media ? media.id : null;
+
+      if (media && media.file) {
+        const mediaFormData = new FormData();
+        mediaFormData.append('file', media.file);
+
+        try {
+          const mediaResponse = await Axios.post(
+            '/api/media/upload',
+            mediaFormData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+          mediaId = mediaResponse.data.data.id;
+        } catch (error) {
+          console.error('Error uploading main media:', error);
+          throw new Error('Failed to upload media');
+        }
+      }
+
       const stepsWithMedia = await Promise.all(
         steps.map(async (step) => {
-          let mediaId = step.media ? step.media.id : null;
+          let stepMediaId = step.media ? step.media.id : null;
 
           if (step.media && step.media.file) {
-            const mediaFormData = new FormData();
-            mediaFormData.append('file', step.media.file);
+            const stepMediaFormData = new FormData();
+            stepMediaFormData.append('file', step.media.file);
 
             try {
-              const mediaResponse = await Axios.post(
+              const stepMediaResponse = await Axios.post(
                 '/api/media/upload',
-                mediaFormData,
+                stepMediaFormData,
                 {
                   headers: {
                     'Content-Type': 'multipart/form-data',
@@ -112,7 +136,7 @@ const EditManual = () => {
                   },
                 },
               );
-              mediaId = mediaResponse.data.data.id;
+              stepMediaId = stepMediaResponse.data.data.id;
             } catch (error) {
               console.error(
                 `Error uploading media for step ${step.number}:`,
@@ -126,7 +150,7 @@ const EditManual = () => {
             id: step.id,
             step_subtitle: step.subtitle,
             step_comment: step.comment,
-            media_id: mediaId,
+            media_id: stepMediaId,
           };
         }),
       );
@@ -134,7 +158,7 @@ const EditManual = () => {
       const data = {
         manual_title: title,
         is_draft: isDraft ? '1' : '0',
-        media_id: media ? media.id : null,
+        media_id: mediaId,
         genres: tags,
         steps: stepsWithMedia,
       };

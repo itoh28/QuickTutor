@@ -35,7 +35,7 @@ class UploadMediaRequest extends FormRequest
     {
         return [
             'file.required' => 'ファイルの設定は必須です。',
-            'file.mimes' => 'サポートされていないファイル形式です。jpg、jpeg、JPG、JPEG、png、mp4、mov、MOV形式のファイルを選択してください。',
+            'file.mimes' => 'サポートされていないファイル形式です。',
             'file.max' => 'ファイルサイズが大きすぎます。最大サイズは106MBです。',
         ];
     }
