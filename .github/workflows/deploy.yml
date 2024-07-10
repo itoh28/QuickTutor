@@ -130,7 +130,9 @@ jobs:
             WWWUSER=1000
             WWWGROUP=1000
             EOL
+            EOF1
 
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF2'
             # Laravelのキャッシュをクリア
             echo "Clearing Laravel cache..."
             sudo php $WEB_ROOT/artisan optimize:clear
@@ -176,7 +178,7 @@ jobs:
             sudo systemctl restart httpd
 
             echo "Deployment script completed successfully."
-          EOF
+          EOF2
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
