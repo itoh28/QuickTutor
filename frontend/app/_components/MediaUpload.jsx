@@ -22,14 +22,8 @@ const MediaUpload = ({
     const file = e.target.files[0];
     if (file) {
       const filetype = file.type;
-      const validImageTypes = [
-        'image/jpg',
-        'image/jpeg',
-        'image/JPG',
-        'image/JPEG',
-        'image/png',
-      ];
-      const validVideoTypes = ['video/mp4', 'video/mov', 'video/MOV'];
+      const validImageTypes = ['image/jpeg', 'image/JPG', 'image/png'];
+      const validVideoTypes = ['video/mp4', 'video/quicktime'];
 
       if (
         validImageTypes.includes(filetype) ||
