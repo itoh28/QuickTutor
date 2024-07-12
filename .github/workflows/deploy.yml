@@ -27,6 +27,7 @@ jobs:
             # 変数の設定
             REPO_DIR="$HOME/QuickTutor"
             WEB_ROOT="/var/www/html/backend"
+            ENV_FILE="$HOME/.env"
 
             # リポジトリを更新
             echo "Pulling latest code from GitHub repository..."
@@ -42,18 +43,17 @@ jobs:
             cd $WEB_ROOT
             sudo /usr/local/bin/composer install --no-dev
 
-            # 既存の.envファイルをコピー
-            echo "Copying existing .env file..."
-            sudo cp $HOME/.env $WEB_ROOT/.env
+            # .envファイルをコピー
+            echo "Copying .env file..."
+            sudo cp $ENV_FILE $WEB_ROOT/.env
 
             # Laravelのキャッシュをクリア
             echo "Clearing Laravel cache..."
             sudo php $WEB_ROOT/artisan optimize:clear
 
-            # データベースのマイグレーションとシーディング
-            echo "Running database migrations and seeders..."
+            # データベースのマイグレーション
+            echo "Running database migrations..."
             sudo php $WEB_ROOT/artisan migrate --force
-            sudo php $WEB_ROOT/artisan db:seed --force
 
             # コンフィグ、ルート、ビューのキャッシュを作成
             echo "Caching configuration..."
