@@ -19,7 +19,7 @@ const DeletedManualList = () => {
     to: 0,
   });
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1) => {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found');
@@ -27,7 +27,7 @@ const DeletedManualList = () => {
     }
 
     try {
-      const response = await Axios.get('/api/trashed', {
+      const response = await Axios.get('/api/trashed?page=' + page, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -192,7 +192,9 @@ const DeletedManualList = () => {
                         {manual.users.map((user) => user.username).join(', ')}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/6 min-w-36 whitespace-normal overflow-visible">
-                        {manual.updatedAt}
+                        {new Date(
+                          manual.lastUpdatedAt || manual.createdAt,
+                        ).toLocaleString()}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/12 text-center whitespace-normal overflow-visible">
                         <RestoreIcon

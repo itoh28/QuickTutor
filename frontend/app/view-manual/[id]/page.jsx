@@ -59,7 +59,7 @@ const ViewManual = () => {
             : null,
         );
         setLastUpdatedBy(manual.lastUpdatedBy);
-        setLastUpdatedAt(manual.lastUpdatedAt);
+        setLastUpdatedAt(manual.lastUpdatedAt || manual.createdAt);
       } catch (error) {
         console.error('Error fetching manual:', error);
       }

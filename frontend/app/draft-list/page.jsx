@@ -26,7 +26,7 @@ const DraftList = () => {
     }
 
     try {
-      const response = await Axios.get('/api/drafts', {
+      const response = await Axios.get('/api/drafts?page=' + page, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -177,7 +177,9 @@ const DraftList = () => {
                         {manual.users.map((user) => user.username).join(', ')}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/6 min-w-36 whitespace-normal overflow-visible">
-                        {manual.updatedAt}
+                        {new Date(
+                          manual.lastUpdatedAt || manual.createdAt,
+                        ).toLocaleString()}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/12 text-center whitespace-normal overflow-visible">
                         <TrashCanIcon

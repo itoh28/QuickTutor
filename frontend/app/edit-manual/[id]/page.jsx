@@ -65,8 +65,8 @@ const EditManual = () => {
               }
             : null,
         );
-        setLastUpdatedBy(manual.lastUpdatedBy);
-        setLastUpdatedAt(manual.lastUpdatedAt);
+        setLastUpdatedBy(manual.lastUpdatedBy || manual.users[0].username);
+        setLastUpdatedAt(manual.lastUpdatedAt || manual.createdAt);
       } catch (error) {
         console.error('Error fetching manual:', error);
       }
@@ -165,11 +165,15 @@ const EditManual = () => {
 
       console.log('FormData:', data);
 
-      await Axios.put(`/api/manuals/${id}`, data, {
+      const response = await Axios.put(`/api/manuals/${id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      // 更新後のレスポンスデータをコンソールに出力
+      const updatedManual = response.data.data;
+      console.log('Updated Manual:', updatedManual);
 
       const prevPage = localStorage.getItem('prevPage');
       if (prevPage) {
