@@ -181,7 +181,9 @@ const EditGenreManualList = ({ params }) => {
                         {manual.users.map((user) => user.username).join(', ')}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/6 min-w-36 whitespace-normal overflow-visible">
-                        {manual.updatedAt}
+                        {new Date(
+                          manual.lastUpdatedAt || manual.createdAt,
+                        ).toLocaleString()}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/12 text-center whitespace-normal overflow-visible">
                         <TrashCanIcon
@@ -197,7 +199,7 @@ const EditGenreManualList = ({ params }) => {
                             fontSize="text-sm"
                             py="py-2"
                             px="px-3"
-                            onClick={() => handleEditClick(manual.id)}
+                            onClick={handleEditClick}
                           />
                         </Link>
                       </td>

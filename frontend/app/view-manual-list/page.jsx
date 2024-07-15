@@ -131,7 +131,9 @@ const ViewManualList = () => {
                         {manual.users.map((user) => user.username).join(', ')}
                       </td>
                       <td className="border border-gray-300 px-4 min-w-36 w-1/6 whitespace-normal overflow-visible">
-                        {manual.updatedAt}
+                        {new Date(
+                          manual.lastUpdatedAt || manual.createdAt,
+                        ).toLocaleString()}
                       </td>
                       <td className="border border-gray-300 px-4 w-1/12 min-w-24 text-center whitespace-normal overflow-visible">
                         <Link href={`/view-manual/${manual.id}`}>

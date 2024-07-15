@@ -7,14 +7,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ManualResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        $data = [
+        $lastUpdatedUser = $this->users->sortByDesc('pivot.updated_at')->first();
+        $lastUpdatedBy = $lastUpdatedUser ? $lastUpdatedUser->username : $this->users->first()->username;
+        $lastUpdatedAt = $lastUpdatedUser ? $lastUpdatedUser->pivot->updated_at->toDateTimeString() : $this->created_at->toDateTimeString();
+
+        return [
             'id' => $this->id,
             'manualTitle' => $this->manual_title,
             'isDraft' => $this->is_draft,
@@ -32,14 +31,9 @@ class ManualResource extends JsonResource
             'genres' => GenreResource::collection($this->whenLoaded('genres')),
             'steps' => StepResource::collection($this->whenLoaded('steps')),
             'media' => new MediaResource($this->whenLoaded('media')),
-            'lastUpdatedBy' => $this->additional['last_updated_by'] ?? null,
-            'lastUpdatedAt' => $this->additional['last_updated_at'] ?? null
+            'lastUpdatedBy' => $lastUpdatedBy,
+            'lastUpdatedAt' => $lastUpdatedAt,
+            'deletedAt' => $this->deleted_at ? $this->deleted_at->toDateTimeString() : null,
         ];
-
-        if ($this->deleted_at) {
-            $data['deletedAt'] = $this->deleted_at->toDateTimeString();
-        }
-
-        return $data;
     }
 }
