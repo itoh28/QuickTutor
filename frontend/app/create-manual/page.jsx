@@ -175,21 +175,31 @@ const CreateManual = () => {
                 </div>
               )}
             </div>
-            {errors.media_id && (
-              <p className="text-red-500 text-xs italic">
-                {errors.media_id[0]}
+            <div>
+              <p className="text-white text-xs italic ml-6">
+                *トップ画像の設定（必須）
               </p>
-            )}
+              {errors.media_id && (
+                <p className="text-red-500 text-xs italic ml-6">
+                  {errors.media_id[0]}
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex-grow flex flex-col my-2">
             <div className="flex w-full justify-between">
               <div className="mt-6">
                 <TagGenerator setTags={setTags} />
-                {errors.genres && (
-                  <p className="text-red-500 text-xs italic">
-                    {errors.genres[0]}
+                <div>
+                  <p className="text-white text-xs italic mt-1">
+                    *ジャンルの設定（必須）
                   </p>
-                )}
+                  {errors.genres && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.genres[0]}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="mt-3">
                 <EscButton />
@@ -207,11 +217,16 @@ const CreateManual = () => {
               }`}
               ref={titleInputRef}
             />
-            {errors.manual_title && (
-              <p className="text-red-500 text-xs italic">
-                {errors.manual_title[0]}
+            <div>
+              <p className="text-white text-xs italic">
+                *タイトルの設定（必須）
               </p>
-            )}
+              {errors.manual_title && (
+                <p className="text-red-500 text-xs italic">
+                  {errors.manual_title[0]}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
