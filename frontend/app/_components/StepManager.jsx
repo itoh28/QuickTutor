@@ -107,11 +107,14 @@ const StepManager = ({
                   <EnlargeIcon onClick={() => onImageClick(step.media.url)} />
                 </div>
               )}
-              {errors[index]?.media_id && (
-                <p className="text-red-500 text-xs italic">
-                  {errors[index].media_id[0]}
+              <div className="ml-6 text-xs italic">
+                <p className="text-black opacity-50">
+                  *ステップ画像の設定（必須）
                 </p>
-              )}
+                {errors[index]?.media_id && (
+                  <p className="text-red-500">{errors[index].media_id[0]}</p>
+                )}
+              </div>
             </div>
             <div className="flex-grow flex flex-col">
               <div className="flex items-center w-full">
@@ -127,11 +130,16 @@ const StepManager = ({
                     maxLength={28}
                     className="mt-2 p-2 w-full border border-gray-300 rounded focus:outline-none"
                   />
-                  {errors[index]?.step_subtitle && (
-                    <p className="text-red-500 text-xs italic">
-                      {errors[index].step_subtitle[0]}
+                  <div className="mt-1 text-xs italic">
+                    <p className="text-black opacity-50">
+                      *サブタイトルの設定（必須）
                     </p>
-                  )}
+                    {errors[index]?.step_subtitle && (
+                      <p className="text-red-500">
+                        {errors[index].step_subtitle[0]}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 {steps.length > 1 && (
                   <button
@@ -149,11 +157,14 @@ const StepManager = ({
                 maxLength={200}
                 className="p-2 flex-1 font-normal border border-gray-300 rounded focus:outline-none my-2"
               />
-              {errors[index]?.step_comment && (
-                <p className="text-red-500 text-xs italic">
-                  {errors[index].step_comment[0]}
-                </p>
-              )}
+              <div className="text-xs italic">
+                <p className="text-black opacity-50">*コメントの設定（必須）</p>
+                {errors[index]?.step_comment && (
+                  <p className="text-red-500 text-xs italic">
+                    {errors[index].step_comment[0]}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -227,25 +227,35 @@ const EditManual = () => {
                 </div>
               )}
             </div>
-            {errors.media_id && (
-              <p className="text-red-500 text-xs italic">
-                {errors.media_id[0]}
+            <div>
+              <p className="text-white text-xs italic ml-6">
+                *トップ画像の設定（必須）
               </p>
-            )}
+              {errors.media_id && (
+                <p className="text-red-500 text-xs italic ml-6">
+                  {errors.media_id[0]}
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex-grow flex flex-col my-2">
             <div className="flex w-full justify-between items-start relative">
               <div className="mt-6">
                 <TagGenerator setTags={setTags} initialTags={tags} />
-                {errors.genres && (
-                  <p className="text-red-500 text-xs italic">
-                    {errors.genres[0]}
+                <div>
+                  <p className="text-white text-xs italic mt-1">
+                    *ジャンルの設定（必須）
                   </p>
-                )}
+                  {errors.genres && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.genres[0]}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="absolute top-6 right-0 flex flex-col items-end">
                 <EscButton />
-                <div className="text-sm text-white mt-28 ml-6 mr-6">
+                <div className="text-sm text-white mt-32 ml-6 mr-6">
                   <p>最終更新者: {lastUpdatedBy}</p>
                   <p>
                     最終更新日時: {new Date(lastUpdatedAt).toLocaleString()}
@@ -260,16 +270,21 @@ const EditManual = () => {
               onKeyDown={handleKeyPress}
               placeholder="タイトルを入力(最大30文字)"
               maxLength={30}
-              className={`my-6 mr-4 p-2 max-w-xl text-lg bg-white rounded focus:outline-none ${
+              className={`mt-6 mb-2 mr-4 p-2 max-w-xl text-lg bg-white rounded focus:outline-none ${
                 errors.manual_title ? 'border-red-500' : ''
               }`}
               ref={titleInputRef}
             />
-            {errors.manual_title && (
-              <p className="text-red-500 text-xs italic">
-                {errors.manual_title[0]}
+            <div>
+              <p className="text-white text-xs italic">
+                *タイトルの設定（必須）
               </p>
-            )}
+              {errors.manual_title && (
+                <p className="text-red-500 text-xs italic">
+                  {errors.manual_title[0]}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
