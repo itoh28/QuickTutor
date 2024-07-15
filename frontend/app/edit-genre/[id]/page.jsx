@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Button from '@/app/_components/Button';
 import Axios from '@/app/_utils/axiosSetup';
 import { TrashCanIcon } from '@/app/_components/_icons/TrashCanIcon';
+import { useRouter } from 'next/navigation';
 
 const EditGenreManualList = ({ params }) => {
   const [manuals, setManuals] = useState([]);
@@ -17,6 +18,8 @@ const EditGenreManualList = ({ params }) => {
     from: 0,
     to: 0,
   });
+
+  const router = useRouter();
 
   const fetchData = async (page = 1) => {
     const token = localStorage.getItem('token');
@@ -91,8 +94,9 @@ const EditGenreManualList = ({ params }) => {
     }
   };
 
-  const handleEditClick = () => {
-    localStorage.setItem('prevPage', `/genre/${params.id}`);
+  const handleEditClick = (id) => {
+    localStorage.setItem('prevPage', `/edit-genre/${params.id}`);
+    router.push(`/edit-manual/${id}`);
   };
 
   return (
@@ -192,16 +196,14 @@ const EditGenreManualList = ({ params }) => {
                         />
                       </td>
                       <td className="border border-gray-300 px-4 w-1/12 min-w-24 text-center whitespace-normal overflow-visible">
-                        <Link href={`/edit-manual/${manual.id}`}>
-                          <Button
-                            text="編集"
-                            type="button"
-                            fontSize="text-sm"
-                            py="py-2"
-                            px="px-3"
-                            onClick={handleEditClick}
-                          />
-                        </Link>
+                        <Button
+                          text="編集"
+                          type="button"
+                          fontSize="text-sm"
+                          py="py-2"
+                          px="px-3"
+                          onClick={() => handleEditClick(manual.id)}
+                        />
                       </td>
                     </tr>
                   ))}
