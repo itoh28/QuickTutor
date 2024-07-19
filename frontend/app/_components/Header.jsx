@@ -85,7 +85,7 @@ const Header = ({ showUserInfo = 'true' }) => {
   return (
     <div className="w-screen text-white bg-main p-5 flex justify-between items-center relative z-50">
       <div className="text-2xl font-bold ml-2">
-        <Link href={'/'}>
+        <Link href={'view-manual-list'}>
           <button>QuickTutor</button>
         </Link>
       </div>
