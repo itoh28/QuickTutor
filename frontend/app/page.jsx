@@ -8,7 +8,7 @@ const Home = () => {
       className="min-h-screen flex flex-col bg-cover bg-center"
       style={{ backgroundImage: "url('/top_page_picture.jpg')" }}
     >
-      <Header showUserInfo={false} />
+      <Header showUserInfo={false} isHomePage={true} />
       <div className="flex-grow flex flex-col items-center justify-center text-white">
         <h1 className="text-7xl mt-16 mb-28">マニュアルをもっと身近に</h1>
         <div className="flex space-x-32">

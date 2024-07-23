@@ -16,7 +16,7 @@ const fetcher = async (url) => {
   return response.data;
 };
 
-const Header = ({ showUserInfo = 'true' }) => {
+const Header = ({ showUserInfo = 'true', isHomePage = false }) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -30,9 +30,13 @@ const Header = ({ showUserInfo = 'true' }) => {
     return (
       <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
         <div className="text-2xl font-bold ml-2">
-          <Link href={'/'}>
-            <button>QuickTutor</button>
-          </Link>
+          {isHomePage ? (
+            <span>QuickTutor</span>
+          ) : (
+            <Link href={'view-manual-list'}>
+              <button>QuickTutor</button>
+            </Link>
+          )}
         </div>
         <div className="text-normal">ユーザーデータを取得できませんでした</div>
       </div>
@@ -43,9 +47,13 @@ const Header = ({ showUserInfo = 'true' }) => {
     return (
       <div className="w-screen text-white bg-main p-5 flex justify-between items-center">
         <div className="text-2xl font-bold ml-2">
-          <Link href={'/'}>
-            <button>QuickTutor</button>
-          </Link>
+          {isHomePage ? (
+            <span>QuickTutor</span>
+          ) : (
+            <Link href={'view-manual-list'}>
+              <button>QuickTutor</button>
+            </Link>
+          )}
         </div>
         <div className="text-normal">Loading...</div>
       </div>
@@ -85,9 +93,13 @@ const Header = ({ showUserInfo = 'true' }) => {
   return (
     <div className="w-screen text-white bg-main p-5 flex justify-between items-center relative z-50">
       <div className="text-2xl font-bold ml-2">
-        <Link href={'view-manual-list'}>
-          <button>QuickTutor</button>
-        </Link>
+        {isHomePage ? (
+          <span>QuickTutor</span>
+        ) : (
+          <Link href={'view-manual-list'}>
+            <button>QuickTutor</button>
+          </Link>
+        )}
       </div>
       {showUserInfo && user && (
         <div className="text-xl font-bold flex space-x-12 mr-4 relative">
