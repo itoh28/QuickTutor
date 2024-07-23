@@ -309,7 +309,7 @@ const EditManual = () => {
           onClick={() => handleSubmit(true)}
         />
         <Button
-          text="修正"
+          text="登録"
           type="button"
           fontSize="text-xl"
           py="py-3"
