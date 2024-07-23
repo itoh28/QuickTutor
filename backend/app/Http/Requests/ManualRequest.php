@@ -31,8 +31,8 @@ class ManualRequest extends FormRequest
             'genres.*' => 'required|string|max:15',
             'steps' => 'required|array|max:50',
             'steps.*.step_subtitle' => 'required|string|max:25',
-            'steps.*.step_comment' => 'required|string|max:200',
-            'steps.*.media_id' => 'required|exists:media,id',
+            'steps.*.step_comment' => 'nullable|string|max:200',
+            'steps.*.media_id' => 'nullable|exists:media,id',
             'is_draft' => 'boolean',
         ];
     }
@@ -54,11 +54,9 @@ class ManualRequest extends FormRequest
             'genres.*.max' => '*ジャンル名は最大15文字までです。',
             'steps.required' => '*1つ以上のステップが必要です。',
             'steps.max' => '*ステップは最大50個まで設定できます。',
-            'steps.*.media_id.required' => '*ステップ画像の設定は必須です。',
-            'steps.*.media_id.exists' => '*ステップ画像の設定は必須です。',
+            'steps.*.media_id.exists' => '*ステップ画像が無効です。',
             'steps.*.step_subtitle.required' => '*ステップサブタイトルの入力は必須です。',
             'steps.*.step_subtitle.max' => '*ステップサブタイトルは最大25文字までです。',
-            'steps.*.step_comment.required' => '*ステップコメントの入力は必須です。',
             'steps.*.step_comment.max' => '*ステップコメントは最大200文字までです。',
         ];
     }

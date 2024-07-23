@@ -83,45 +83,48 @@ const CreateManual = () => {
 
       tags.forEach((tag, index) => formData.append(`genres[${index}]`, tag));
 
-      const stepsData = [];
-      for (const step of steps) {
-        let stepMediaId = null;
-        if (step.media && step.media.file) {
-          const stepMediaFormData = new FormData();
-          stepMediaFormData.append('file', step.media.file);
+      const stepsWithMedia = await Promise.all(
+        steps.map(async (step) => {
+          let stepMediaId = null;
+          if (step.media && step.media.file) {
+            const stepMediaFormData = new FormData();
+            stepMediaFormData.append('file', step.media.file);
 
-          try {
-            const stepMediaResponse = await Axios.post(
-              '/api/media/upload',
-              stepMediaFormData,
-              {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${token}`,
+            try {
+              const stepMediaResponse = await Axios.post(
+                '/api/media/upload',
+                stepMediaFormData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
                 },
-              },
-            );
-            stepMediaId = stepMediaResponse.data.data.id;
-          } catch (error) {
-            console.error(
-              `Error uploading media for step ${step.number}:`,
-              error,
-            );
-            throw new Error(`Failed to upload media for step ${step.number}`);
+              );
+              stepMediaId = stepMediaResponse.data.data.id;
+            } catch (error) {
+              console.error(
+                `Error uploading media for step ${step.number}:`,
+                error,
+              );
+              throw new Error(`Failed to upload media for step ${step.number}`);
+            }
           }
-        }
 
-        stepsData.push({
-          step_subtitle: step.subtitle,
-          step_comment: step.comment,
-          media_id: stepMediaId,
-        });
-      }
+          return {
+            step_subtitle: step.subtitle,
+            step_comment: step.comment,
+            media_id: stepMediaId,
+          };
+        }),
+      );
 
-      stepsData.forEach((step, index) => {
+      stepsWithMedia.forEach((step, index) => {
         formData.append(`steps[${index}][step_subtitle]`, step.step_subtitle);
         formData.append(`steps[${index}][step_comment]`, step.step_comment);
-        formData.append(`steps[${index}][media_id]`, step.media_id);
+        if (step.media_id) {
+          formData.append(`steps[${index}][media_id]`, step.media_id);
+        }
       });
 
       await Axios.post('/api/manuals', formData, {

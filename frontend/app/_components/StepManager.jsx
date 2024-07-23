@@ -109,7 +109,7 @@ const StepManager = ({
               )}
               <div className="ml-6 text-xs italic">
                 <p className="text-black opacity-50">
-                  *ステップ画像の設定（必須）
+                  *ステップ画像の設定（任意）
                 </p>
                 {errors[index]?.media_id && (
                   <p className="text-red-500">{errors[index].media_id[0]}</p>
@@ -158,7 +158,7 @@ const StepManager = ({
                 className="p-2 flex-1 font-normal border border-gray-300 rounded focus:outline-none my-2"
               />
               <div className="text-xs italic">
-                <p className="text-black opacity-50">*コメントの設定（必須）</p>
+                <p className="text-black opacity-50">*コメントの設定（任意）</p>
                 {errors[index]?.step_comment && (
                   <p className="text-red-500 text-xs italic">
                     {errors[index].step_comment[0]}
