@@ -9,7 +9,6 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const ViewModeSidebar = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [hoverIndex, setHoverIndex] = useState(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -30,46 +29,31 @@ const ViewModeSidebar = () => {
 
   const handleButtonClick = (index, path) => {
     setActiveIndex(index);
-    setHoverIndex(null);
     router.push(path);
-  };
-
-  const handleMouseEnter = (index) => {
-    setHoverIndex(index);
-  };
-
-  const handleMouseLeave = () => {
-    setHoverIndex(null);
   };
 
   const getButtonClass = (index) => {
     if (index === activeIndex) {
-      return 'bg-baseColor text-main font-bold';
-    } else if (hoverIndex === index) {
-      return 'bg-baseColor text-main font-bold';
-    } else {
-      return 'hover:bg-baseColor hover:text-main hover:font-bold';
+      return 'bg-main text-white font-bold';
     }
   };
 
   return (
     <div className="flex flex-col text-lg text-white h-full w-48">
       <Link href="/edit-manual-list">
-        <div className="w-full flex justify-center text-black bg-accent2 hover:bg-baseColor hover:text-main py-4">
+        <div className="w-full flex justify-center text-black bg-accent2 py-4">
           <button className="mr-2 font-semibold flex items-center">
             編集モードへ <SwitchIcon className="ml-2" />
           </button>
         </div>
       </Link>
 
-      <div className="flex-1 flex flex-col justify-between bg-main">
+      <div className="flex-1 flex flex-col justify-between text-main font-bold bg-baseColor">
         <div
           className={`w-full flex-grow flex items-center justify-center py-3 ${getButtonClass(
             0,
           )}`}
           onClick={() => handleButtonClick(0, '/view-manual-list')}
-          onMouseEnter={() => handleMouseEnter(0)}
-          onMouseLeave={handleMouseLeave}
         >
           <ListIcon />
           <span className="ml-1">マニュアル一覧</span>
@@ -80,8 +64,6 @@ const ViewModeSidebar = () => {
             1,
           )}`}
           onClick={() => handleButtonClick(1, '/view-genre-list')}
-          onMouseEnter={() => handleMouseEnter(1)}
-          onMouseLeave={handleMouseLeave}
         >
           <TagIcon />
           <span className="ml-1">ジャンル</span>
