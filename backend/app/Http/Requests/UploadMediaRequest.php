@@ -22,7 +22,7 @@ class UploadMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|mimes:jpg,jpeg,JPG,png,mp4,mov,MOV|max:108800', // 最大サイズは約106MB
+            'file' => 'required|file|mimes:jpg,jpeg,JPG,png,mp4,mov,MOV|max:3145728', // 最大サイズは約3GB
         ];
     }
 
