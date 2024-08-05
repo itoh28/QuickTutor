@@ -92,6 +92,3 @@ jobs:
 
             echo "Deployment script completed successfully."
           EOF
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
